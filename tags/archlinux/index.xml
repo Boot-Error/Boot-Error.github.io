@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>archlinux on Vighnesh&#39;s Musings</title>
+    <link>https://boot-error.github.io/tags/archlinux/</link>
+    <description>Recent content in archlinux on Vighnesh&#39;s Musings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    
+	<atom:link href="https://boot-error.github.io/tags/archlinux/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Adopting LVM</title>
+      <link>https://boot-error.github.io/post/lvm/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/post/lvm/</guid>
+      <description>I use Arch Linux on every machine in my possession.
+Within a year of its use, I realized what Arch Linux F**kups really mean and why people cry about it.
+But I figured out a escape to a problem I always faced during a f**kup, It&amp;rsquo;s the disk partitions and re-installation.
+The Trouble Traditionally you would have a setup like this.
+n00b: - /dev/sda1 - / (OS installation) - /home/user (home folder)  Your everyhing is in the root partition.</description>
+    </item>
+    
+  </channel>
+</rss>

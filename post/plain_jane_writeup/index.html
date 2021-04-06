@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+	  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<meta property="og:title" content="Ramblings from Vighnesh" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="" />
+<meta property="og:image" content="flying_toaster.jpg" />
+<meta property="og:description" content="">
+<link rel="canonical" href="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack/0.8.1/hack.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack/0.8.1/dark.css">
+<style>
+a::after,
+a[rel*="external"] {
+  content: " " url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20class='i-external'%20viewBox='0%200%2032%2032'%20width='14'%20height='14'%20fill='none'%20stroke='%23ff9800'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='9.38%'%3E%3Cpath%20d='M14%209%20L3%209%203%2029%2023%2029%2023%2018%20M18%204%20L28%204%2028%2014%20M28%204%20L14%2018'/%3E%3C/svg%3E");
+}
+</style>
+
+  </head>
+  <body class="hack dark main container">
+    <header>
+  
+  <nav>
+    
+    
+      <a class="" href="/">Home</a>
+    
+      <a class="" href="/about/">About</a>
+    
+      <a class="active" href="/post/">Posts</a>
+    
+  </nav>
+
+
+</header>
+    <main>
+  <h1>plain_jane - AUCTF writeup</h1>
+  
+  
+	<a href="https://boot-error.github.io/tags/ctf-writeup/">ctf-writeup</a>
+  
+	<a href="https://boot-error.github.io/tags/radare/">radare</a>
+  
+	<a href="https://boot-error.github.io/tags/reversing/">reversing</a>
+  
+  <br/>
+  <br/>
+  <details>
+	  <summary>Table of Contents</summary>
+	  <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#compile">Compile</a></li>
+        <li><a href="#recon">Recon</a></li>
+        <li><a href="#debug-to-get-the-flag">Debug to get the flag</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </details>
+  
+  <p>In <a href="https://ctf.auburn.edu/">AUCTF 2020</a> under <code>rev</code> section, the challenge <a href="https://github.com/auehc/AUCTF-2020/blob/master/Reversing/Plain%20Jane/prompt.md">plain jane</a> had a assembly code. It said, we need to figure out what the program returns.</p>
+<p>Here&rsquo;s what I did.</p>
+<p>First, compile it to binary using <code>gcc</code></p>
+<h3 id="compile">Compile</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">gcc -o plain_jane plain_jane.s
+</code></pre></div><p>Then open the binary in radare.</p>
+<h3 id="recon">Recon</h3>
+<pre><code class="language-radare2" data-lang="radare2">o plain_jane
+aaa
+i
+</code></pre><pre><code>fd       7
+file     plain_jane
+size     0x4040
+humansz  16.1K
+mode     r-x
+format   elf64
+iorw     false
+blksz    0x0
+block    0x100
+type     DYN (Shared object file)
+arch     x86
+baddr    0x0
+binsz    14714
+bintype  elf
+bits     64
+canary   false
+class    ELF64
+compiler GCC: (Arch Linux 9.3.0-1) 9.3.0/GCC: (Debian 9.2.1-22) 9.2.1 20200104
+crypto   false
+endian   little
+havecode true
+intrp    /lib64/ld-linux-x86-64.so.2
+laddr    0x0
+lang     c
+linenum  true
+lsyms    true
+machine  AMD x86-64 architecture
+maxopsz  16
+minopsz  1
+nx       true
+os       linux
+pcalign  0
+pic      true
+relocs   true
+relro    partial
+rpath    NONE
+sanitiz  false
+static   false
+stripped false
+subsys   linux
+va       true
+</code></pre>
+<pre><code class="language-radare2" data-lang="radare2">aflm
+</code></pre><pre><code>entry0:
+    reloc.__libc_start_main
+
+entry.fini0:
+    reloc.__cxa_finalize
+    rip
+
+sym.__libc_csu_init:
+    sym._init
+    rdx
+
+main:
+    sym.func_1
+    sym.func_2
+    sym.func_3
+</code></pre>
+<p>So we have <code>main</code> calling 3 functions <code>func_1</code>, <code>func_2</code> and <code>func_3</code></p>
+<pre><code class="language-radare2" data-lang="radare2">s main
+pdf
+</code></pre><pre><code>┌ 59: int main (int argc, char **argv, char **envp);
+│           ; var int64_t var_ch @ rbp-0xc
+│           ; var int64_t var_8h @ rbp-0x8
+│           ; var int64_t var_4h @ rbp-0x4
+│           ; DATA XREF from entry0 @ 0x1041
+│           0x00001119      55             push rbp
+│           0x0000111a      4889e5         mov rbp, rsp
+│           0x0000111d      4883ec10       sub rsp, 0x10
+│           0x00001121      b800000000     mov eax, 0
+│           0x00001126      e829000000     call sym.func_1
+│           0x0000112b      8945fc         mov dword [var_4h], eax
+│           0x0000112e      b800000000     mov eax, 0
+│           0x00001133      e85e000000     call sym.func_2
+│           0x00001138      8945f8         mov dword [var_8h], eax
+│           0x0000113b      8b55f8         mov edx, dword [var_8h]
+│           0x0000113e      8b45fc         mov eax, dword [var_4h]
+│           0x00001141      89d6           mov esi, edx
+│           0x00001143      89c7           mov edi, eax
+│           0x00001145      e85c000000     call sym.func_3
+│           0x0000114a      8945f4         mov dword [var_ch], eax
+│           0x0000114d      b800000000     mov eax, 0
+│           0x00001152      c9             leave
+└           0x00001153      c3             ret
+</code></pre>
+<p>Disassembly of <code>main</code> shows us these calls being made and the parameters passed.</p>
+<p>Now since we need to know what the program returns, find the location where the final output of the program is stored. The final computation is returned by the <code>func_3</code> fn call, where the output is pushed to stack at <code>rbp-0xc</code>.</p>
+<p>Running the program in debugger and setting a breakpoint at <code>0x0000114a</code> should give us the output we have been looking for.</p>
+<h3 id="debug-to-get-the-flag">Debug to get the flag</h3>
+<pre><code class="language-radare2" data-lang="radare2">ood
+s main
+pdf
+</code></pre><pre><code>7380
+┌ 59: int main (int argc, char **argv, char **envp);
+│           ; var int64_t var_ch @ rbp-0xc
+│           ; var int64_t var_8h @ rbp-0x8
+│           ; var int64_t var_4h @ rbp-0x4
+│           ; DATA XREF from entry0 @ 0x55c1cd642041
+│           0x55c1cd642119      55             push rbp
+│           0x55c1cd64211a      4889e5         mov rbp, rsp
+│           0x55c1cd64211d      4883ec10       sub rsp, 0x10
+│           0x55c1cd642121      b800000000     mov eax, 0
+│           0x55c1cd642126      e829000000     call sym.func_1
+│           0x55c1cd64212b      8945fc         mov dword [var_4h], eax
+│           0x55c1cd64212e      b800000000     mov eax, 0
+│           0x55c1cd642133      e85e000000     call sym.func_2
+│           0x55c1cd642138      8945f8         mov dword [var_8h], eax
+│           0x55c1cd64213b      8b55f8         mov edx, dword [var_8h]
+│           0x55c1cd64213e      8b45fc         mov eax, dword [var_4h]
+│           0x55c1cd642141      89d6           mov esi, edx
+│           0x55c1cd642143      89c7           mov edi, eax
+│           0x55c1cd642145      e85c000000     call sym.func_3
+│           0x55c1cd64214a      8945f4         mov dword [var_ch], eax
+│           0x55c1cd64214d      b800000000     mov eax, 0
+│           0x55c1cd642152      c9             leave
+└           0x55c1cd642153      c3             ret
+</code></pre>
+<pre><code class="language-radare2" data-lang="radare2">dcu 0x55c1cd64214a
+</code></pre><p>At this state, the value returned from <code>func_3</code> is stored in <code>eax</code> register. Let&rsquo;s inspect the registers.</p>
+<pre><code class="language-radare2" data-lang="radare2">dr
+</code></pre><pre><code>rax = 0x00006fcf
+rbx = 0x55c1cd642250
+rcx = 0x7fa9d9097578
+rdx = 0xffffffb6
+r8 = 0x00000000
+r9 = 0x7fa9d90d5260
+r10 = 0x00000003
+r11 = 0x00000002
+r12 = 0x55c1cd642020
+r13 = 0x7fff4914ae50
+r14 = 0x00000000
+r15 = 0x00000000
+rsi = 0x000000cf
+rdi = 0x00000042
+rsp = 0x7fff4914ad50
+rbp = 0x7fff4914ad60
+rip = 0x55c1cd64214a
+rflags = 0x00000246
+orax = 0xffffffffffffffff
+</code></pre>
+<p>In <code>x86_64</code>, the <code>rax</code> register&rsquo;s lower half i.e the 32bits from LSB is the value stored in <code>eax</code>. On converting <code>0x6fcf</code> into a decimal, we should get the flag.</p>
+<pre><code class="language-radare2" data-lang="radare2">? 0x6fcf
+</code></pre><pre><code>int32   28623
+uint32  28623
+hex     0x6fcf
+octal   067717
+unit    28.0K
+segment 0000:0fcf
+string  &quot;\xcfo&quot;
+fvalue: 28623.0
+float:  0.000000f
+double: 0.000000
+binary  0b0110111111001111
+trits   0t1110021010
+</code></pre>
+<p>The flag is <em>28623</em></p>
+
+</main>
+    <footer>
+  <hr/>
+</footer>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-162174989-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>arduino on Vighnesh&#39;s Musings</title>
+    <link>https://boot-error.github.io/tags/arduino/</link>
+    <description>Recent content in arduino on Vighnesh&#39;s Musings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    
+	<atom:link href="https://boot-error.github.io/tags/arduino/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>WFH Hack with Attiny85</title>
+      <link>https://boot-error.github.io/post/wfh_hack_using_attiny85/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/post/wfh_hack_using_attiny85/</guid>
+      <description>I&amp;rsquo;m restricted to using my Work Laptop for everything related to work and it&amp;rsquo;s all great and usual, but with a minor inconvenience. The laptop hibernates after couple of minutes of inactivity, and If walk away for a coffee, I&amp;rsquo;ll miss on important notification, delaying my response.
+And I can&amp;rsquo;t change the screensaver settings, which is acceptable. Hence, I came up with this hack.
+My Smart friend&amp;rsquo;s hack A friend of mine came up with a simple hack, where he would place his Analog Watch underneath the mouse&amp;rsquo;s optical sensor.</description>
+    </item>
+    
+  </channel>
+</rss>

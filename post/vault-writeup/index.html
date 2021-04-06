@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+	  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<meta property="og:title" content="Ramblings from Vighnesh" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="" />
+<meta property="og:image" content="flying_toaster.jpg" />
+<meta property="og:description" content="">
+<link rel="canonical" href="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack/0.8.1/hack.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack/0.8.1/dark.css">
+<style>
+a::after,
+a[rel*="external"] {
+  content: " " url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20class='i-external'%20viewBox='0%200%2032%2032'%20width='14'%20height='14'%20fill='none'%20stroke='%23ff9800'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='9.38%'%3E%3Cpath%20d='M14%209%20L3%209%203%2029%2023%2029%2023%2018%20M18%204%20L28%204%2028%2014%20M28%204%20L14%2018'/%3E%3C/svg%3E");
+}
+</style>
+
+  </head>
+  <body class="hack dark main container">
+    <header>
+  
+  <nav>
+    
+    
+      <a class="" href="/">Home</a>
+    
+      <a class="" href="/about/">About</a>
+    
+      <a class="active" href="/post/">Posts</a>
+    
+  </nav>
+
+
+</header>
+    <main>
+  <h1>vault - TAMUctf writeup</h1>
+  
+  
+	<a href="https://boot-error.github.io/tags/ctf-writeup/">ctf-writeup</a>
+  
+	<a href="https://boot-error.github.io/tags/radare/">radare</a>
+  
+	<a href="https://boot-error.github.io/tags/reversing/">reversing</a>
+  
+  <br/>
+  <br/>
+  <details>
+	  <summary>Table of Contents</summary>
+	  <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#recon">Recon</a></li>
+        <li><a href="#function-calls">Function calls</a></li>
+        <li><a href="#analyze-main">Analyze <code>main</code></a></li>
+        <li><a href="#debugging-to-get-the-flag">Debugging to get the flag</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </details>
+  
+  <p>For me its been a long while since I challenged in a ctf competition. So I decided to play one because we in &ldquo;Quarantine&rdquo; anyway.
+This challenge is from <a href="https://tamuctf.com/challenges#VAULT">TAMUctf 2020</a> under &ldquo;Reversing&rdquo; named as &lsquo;vault&rsquo;.</p>
+<p>I swear anything that says <code>vault</code> as a introductory challenge is a good way to brush up your basic debugging skills, because its the <code>printf(&quot;hello, world&quot;);</code> of reverse engineering and binary analysis.</p>
+<p>I&rsquo;ll be using <code>radare2</code> using <code>jupyter-radare2</code> kernel.</p>
+<h3 id="recon">Recon</h3>
+<p>First let&rsquo;s analyze the binary.</p>
+<pre><code class="language-radare2" data-lang="radare2">o vault
+aaa
+</code></pre><pre><code class="language-radare2" data-lang="radare2">i
+</code></pre><pre><code>fd       4
+file     vault
+size     0x4230
+humansz  16.5K
+mode     r-x
+format   elf64
+iorw     false
+blksz    0x0
+block    0x100
+type     DYN (Shared object file)
+arch     x86
+baddr    0x0
+binsz    15020
+bintype  elf
+bits     64
+canary   false
+class    ELF64
+compiler GCC: (Debian 9.3.0-3) 9.3.0
+crypto   false
+endian   little
+havecode true
+intrp    /lib64/ld-linux-x86-64.so.2
+laddr    0x0
+lang     c
+linenum  true
+lsyms    true
+machine  AMD x86-64 architecture
+maxopsz  16
+minopsz  1
+nx       true
+os       linux
+pcalign  0
+pic      true
+relocs   true
+relro    partial
+rpath    NONE
+sanitiz  false
+static   false
+stripped false
+subsys   linux
+va       true
+</code></pre>
+<p>It&rsquo;s ELF 64 and not <code>stripped</code>. Awww yea!</p>
+<h3 id="function-calls">Function calls</h3>
+<p>Analyzing the function call stack, it&rsquo;s evident that it takes input from user using <code>fgets</code> and displays results.</p>
+<pre><code class="language-radare2" data-lang="radare2">aflm
+</code></pre><pre><code>entry0:
+    reloc.__libc_start_main
+
+entry.fini0:
+    sym..plt.got
+    rip
+
+sym.deobfuscate:
+    sym.imp.strlen
+
+sym.__libc_csu_init:
+    sym._init
+    rsi
+
+main:
+    sym.imp.malloc
+    sym.deobfuscate
+    sym.imp.printf
+    sym.imp.fgets
+    sym.imp.strcmp
+    sym.imp.puts
+</code></pre>
+<p>And <code>deobfuscate</code> is a defined function. Might be something related to password?</p>
+<h3 id="analyze-main">Analyze <code>main</code></h3>
+<pre><code class="language-radare2" data-lang="radare2">s main
+pdf
+</code></pre><pre><code>┌ 207: int main (int argc, char **argv, char **envp);
+│           ; var char *s2 @ rbp-0x10
+│           ; var char *s1 @ rbp-0x8
+│           ; DATA XREF from entry0 @ 0x10bd
+│           0x000012c9      55             push rbp
+│           0x000012ca      4889e5         mov rbp, rsp
+│           0x000012cd      4883ec10       sub rsp, 0x10
+│           0x000012d1      bf1a000000     mov edi, 0x1a               ; size_t size
+│           0x000012d6      e8a5fdffff     call sym.imp.malloc         ;  void *malloc(size_t size)
+│           0x000012db      488945f8       mov qword [s1], rax
+│           0x000012df      488b45f8       mov rax, qword [s1]
+│           0x000012e3      48be34343238.  movabs rsi, 0x7e394c2f38323434 ; '4428/L9~'
+│           0x000012ed      48bf783a787b.  movabs rdi, 0x54834c1f7b783a78
+│           0x000012f7      488930         mov qword [rax], rsi
+│           0x000012fa      48897808       mov qword [rax + 8], rdi
+│           0x000012fe      48b928298484.  movabs rcx, 0x2f72857884842928
+│           0x00001308      48894810       mov qword [rax + 0x10], rcx
+│           0x0000130c      66c740186776   mov word [rax + 0x18], 0x7667 ; 'gv'
+│                                                                      ; [0x7667:2]=0xffff
+│           0x00001312      c6401a00       mov byte [rax + 0x1a], 0
+│           0x00001316      488b45f8       mov rax, qword [s1]
+│           0x0000131a      4889c7         mov rdi, rax
+│           0x0000131d      e863feffff     call sym.deobfuscate
+│           0x00001322      bf1b000000     mov edi, 0x1b               ; size_t size
+│           0x00001327      e854fdffff     call sym.imp.malloc         ;  void *malloc(size_t size)
+│           0x0000132c      488945f0       mov qword [s2], rax
+│           0x00001330      488d35d10c00.  lea rsi, str.Enter_password: ; 0x2008 ; &quot;Enter password: &quot;
+│           0x00001337      488d3ddb0c00.  lea rdi, [0x00002019]       ; &quot;%s&quot; ; const char *format
+│           0x0000133e      b800000000     mov eax, 0
+│           0x00001343      e808fdffff     call sym.imp.printf         ; int printf(const char *format)
+│           0x00001348      488b15112d00.  mov rdx, qword [obj.stdin]  ; obj.stdin__GLIBC_2.2.5
+│                                                                      ; [0x4060:8]=0 ; FILE *stream
+│           0x0000134f      488b45f0       mov rax, qword [s2]
+│           0x00001353      be1b000000     mov esi, 0x1b               ; int size
+│           0x00001358      4889c7         mov rdi, rax                ; char *s
+│           0x0000135b      e800fdffff     call sym.imp.fgets          ; char *fgets(char *s, int size, FILE *stream)
+│           0x00001360      488b55f0       mov rdx, qword [s2]
+│           0x00001364      488b45f8       mov rax, qword [s1]
+│           0x00001368      4889d6         mov rsi, rdx                ; const char *s2
+│           0x0000136b      4889c7         mov rdi, rax                ; const char *s1
+│           0x0000136e      e8fdfcffff     call sym.imp.strcmp         ; int strcmp(const char *s1, const char *s2)
+│           0x00001373      85c0           test eax, eax
+│       ┌─&lt; 0x00001375      750e           jne 0x1385
+│       │   0x00001377      488d3da20c00.  lea rdi, str.Correct___That_s_the_password ; 0x2020 ; &quot;Correct!  That's the password!&quot; ; const char *s
+│       │   0x0000137e      e8adfcffff     call sym.imp.puts           ; int puts(const char *s)
+│      ┌──&lt; 0x00001383      eb0c           jmp 0x1391
+│      ││   ; CODE XREF from main @ 0x1375
+│      │└─&gt; 0x00001385      488d3db40c00.  lea rdi, str.Sorry__that_isn_t_the_right_password. ; 0x2040 ; &quot;Sorry, that isn't the right password.&quot; ; const char *s
+│      │    0x0000138c      e89ffcffff     call sym.imp.puts           ; int puts(const char *s)
+│      │    ; CODE XREF from main @ 0x1383
+│      └──&gt; 0x00001391      b800000000     mov eax, 0
+│           0x00001396      c9             leave
+└           0x00001397      c3             ret
+</code></pre>
+<p>Seems pretty trivial, the <code>deobfuscate</code> functions makes some sort of string and stores in <code>s1</code>, then the program asks user to &ldquo;Enter Password&rdquo;, the input is taken and is of the size <code>0x1b</code> and stored in <code>s2</code>. Note that <code>fgets</code> is used. The creator doesn&rsquo;t want us to buffer overflow.</p>
+<p>And then the two strings are compared, if they are equal it stays &ldquo;That&rsquo;s the password and exits&rdquo; ?!?</p>
+<p>At this stage, I&rsquo;m pretty sure the string in <code>s1</code> created from <code>deobfuscate</code> is the flag we need.</p>
+<p>Let&rsquo;s check the disassembly of <code>deobfuscate</code></p>
+<pre><code class="language-radare2" data-lang="radare2">s sym.deobfuscate
+pdf
+</code></pre><pre><code>┌ 324: sym.deobfuscate (char *arg1);
+│           ; var char *s @ rbp-0x28
+│           ; var int64_t var_15h @ rbp-0x15
+│           ; var size_t var_14h @ rbp-0x14
+│           ; var size_t var_10h @ rbp-0x10
+│           ; var int64_t var_ch @ rbp-0xc
+│           ; var int64_t var_8h @ rbp-0x8
+│           ; var int64_t var_4h @ rbp-0x4
+│           ; arg char *arg1 @ rdi
+│           ; CALL XREF from main @ 0x131d
+│           0x00001185      55             push rbp
+│           0x00001186      4889e5         mov rbp, rsp
+│           0x00001189      4883ec30       sub rsp, 0x30
+│           0x0000118d      48897dd8       mov qword [s], rdi          ; arg1
+│           0x00001191      488b45d8       mov rax, qword [s]
+│           0x00001195      4889c7         mov rdi, rax                ; const char *s
+│           0x00001198      e8a3feffff     call sym.imp.strlen         ; size_t strlen(const char *s)
+│           0x0000119d      8945ec         mov dword [var_14h], eax
+│           0x000011a0      c745fc000000.  mov dword [var_4h], 0
+│       ┌─&lt; 0x000011a7      eb4f           jmp 0x11f8
+│       │   ; CODE XREF from sym.deobfuscate @ 0x11fe
+│      ┌──&gt; 0x000011a9      8b45fc         mov eax, dword [var_4h]
+│      ╎│   0x000011ac      4863d0         movsxd rdx, eax
+│      ╎│   0x000011af      488b45d8       mov rax, qword [s]
+│      ╎│   0x00001296      4863d0         movsxd rdx, eax
+
+. . . . . . .  i t s  h u g e  a n d  w o r t h l e s s  t o  w o r r y  a b o u t    . . . . . . .
+
+│      ╎│   0x00001299      488b45d8       mov rax, qword [s]
+│      ╎│   0x0000129d      4801d0         add rax, rdx
+│      ╎│   0x000012a0      0fb608         movzx ecx, byte [rax]
+│      ╎│   0x000012a3      8b45f0         mov eax, dword [var_10h]
+│      ╎│   0x000012a6      4898           cdqe
+│      ╎│   0x000012a8      488d50ff       lea rdx, [rax - 1]
+│      ╎│   0x000012ac      488b45d8       mov rax, qword [s]
+│      ╎│   0x000012b0      4801d0         add rax, rdx
+│      ╎│   0x000012b3      31ce           xor esi, ecx
+│      ╎│   0x000012b5      89f2           mov edx, esi
+│      ╎│   0x000012b7      8810           mov byte [rax], dl
+│      ╎│   0x000012b9      836df001       sub dword [var_10h], 1
+│      ╎│   ; CODE XREF from sym.deobfuscate @ 0x1278
+│      ╎└─&gt; 0x000012bd      837df000       cmp dword [var_10h], 0
+│      └──&lt; 0x000012c1      7fb7           jg 0x127a
+│           0x000012c3      488b45d8       mov rax, qword [s]
+│           0x000012c7      c9             leave
+└           0x000012c8      c3             ret
+</code></pre>
+<p>It&rsquo;s huge, and I&rsquo;m too lazy to do it. So here is the thing, the function only takes an memory address to strcpy the computed password and it doesn&rsquo;t require any parameter that changes i.e it&rsquo;s a <a href="https://en.wikipedia.org/wiki/Pure_function">pure</a> functions? I&rsquo;m looking at you, fp nerds.</p>
+<p>Why don&rsquo;t we just debug it.</p>
+<h3 id="debugging-to-get-the-flag">Debugging to get the flag</h3>
+<pre><code class="language-radare2" data-lang="radare2">ood
+</code></pre><pre><code>73743
+</code></pre>
+<pre><code class="language-radare2" data-lang="radare2">dcu main
+pd
+</code></pre><pre><code>┌ 207: int main (int argc, char **argv, char **envp);
+│           ; var char *s2 @ rbp-0x10
+│           ; var char *s1 @ rbp-0x8
+│           ; DATA XREF from entry0 @ 0x559ab2a2d0bd
+│           0x559ab2a2d2c9      55             push rbp
+│           0x559ab2a2d2ca      4889e5         mov rbp, rsp
+│           0x559ab2a2d2cd      4883ec10       sub rsp, 0x10
+│           0x559ab2a2d2d1      bf1a000000     mov edi, 0x1a           ; 26 ; size_t size
+│           0x559ab2a2d2d6      e8a5fdffff     call sym.imp.malloc     ;  void *malloc(size_t size)
+│           0x559ab2a2d2db      488945f8       mov qword [s1], rax
+│           0x559ab2a2d2df      488b45f8       mov rax, qword [s1]
+│           0x559ab2a2d2e3      48be34343238.  movabs rsi, 0x7e394c2f38323434 ; '4428/L9~'
+│           0x559ab2a2d2ed      48bf783a787b.  movabs rdi, 0x54834c1f7b783a78
+│           0x559ab2a2d2f7      488930         mov qword [rax], rsi
+│           0x559ab2a2d2fa      48897808       mov qword [rax + 8], rdi
+│           0x559ab2a2d2fe      48b928298484.  movabs rcx, 0x2f72857884842928
+│           0x559ab2a2d308      48894810       mov qword [rax + 0x10], rcx
+│           0x559ab2a2d30c      66c740186776   mov word [rax + 0x18], 0x7667 ; 'gv'
+│                                                                      ; [0x7667:2]=0xffff
+│           0x559ab2a2d312      c6401a00       mov byte [rax + 0x1a], 0
+│           0x559ab2a2d316      488b45f8       mov rax, qword [s1]
+│           0x559ab2a2d31a      4889c7         mov rdi, rax
+│           0x559ab2a2d31d      e863feffff     call sym.deobfuscate
+│           0x559ab2a2d322      bf1b000000     mov edi, 0x1b           ; 27 ; size_t size
+│           0x559ab2a2d327      e854fdffff     call sym.imp.malloc     ;  void *malloc(size_t size)
+│           0x559ab2a2d32c      488945f0       mov qword [s2], rax
+│           0x559ab2a2d330      488d35d10c00.  lea rsi, str.Enter_password: ; 0x559ab2a2e008 ; &quot;Enter password: &quot;
+│           0x559ab2a2d337      488d3ddb0c00.  lea rdi, [0x559ab2a2e019] ; &quot;%s&quot; ; const char *format
+│           0x559ab2a2d33e      b800000000     mov eax, 0
+│           0x559ab2a2d343      e808fdffff     call sym.imp.printf     ; int printf(const char *format)
+│           0x559ab2a2d348      488b15112d00.  mov rdx, qword [obj.stdin] ; obj.stdin__GLIBC_2.2.5
+│                                                                      ; [0x559ab2a30060:8]=0x7f9f4702c7e0 ; FILE *stream
+│           0x559ab2a2d34f      488b45f0       mov rax, qword [s2]
+│           0x559ab2a2d353      be1b000000     mov esi, 0x1b           ; 27 ; int size
+│           0x559ab2a2d358      4889c7         mov rdi, rax            ; char *s
+│           0x559ab2a2d35b      e800fdffff     call sym.imp.fgets      ; char *fgets(char *s, int size, FILE *stream)
+│           0x559ab2a2d360      488b55f0       mov rdx, qword [s2]
+│           0x559ab2a2d364      488b45f8       mov rax, qword [s1]
+│           0x559ab2a2d368      4889d6         mov rsi, rdx            ; const char *s2
+│           0x559ab2a2d36b      4889c7         mov rdi, rax            ; const char *s1
+│           0x559ab2a2d36e      e8fdfcffff     call sym.imp.strcmp     ; int strcmp(const char *s1, const char *s2)
+│           0x559ab2a2d373      85c0           test eax, eax
+│           0x559ab2a2d375      750e           jne 0x559ab2a2d385
+│           0x559ab2a2d377      488d3da20c00.  lea rdi, str.Correct___That_s_the_password ; 0x559ab2a2e020 ; &quot;Correct!  That's the password!&quot; ; const char *s
+│           0x559ab2a2d37e      e8adfcffff     call sym.imp.puts       ; int puts(const char *s)
+│           0x559ab2a2d383      eb0c           jmp 0x559ab2a2d391
+│           ; CODE XREF from main @ 0x559ab2a2d375
+│           0x559ab2a2d385      488d3db40c00.  lea rdi, str.Sorry__that_isn_t_the_right_password. ; 0x559ab2a2e040 ; &quot;Sorry, that isn't the right password.&quot; ; const char *s
+│           0x559ab2a2d38c      e89ffcffff     call sym.imp.puts       ; int puts(const char *s)
+│           ; CODE XREF from main @ 0x559ab2a2d383
+│           0x559ab2a2d391      b800000000     mov eax, 0
+│           0x559ab2a2d396      c9             leave
+└           0x559ab2a2d397      c3             ret
+</code></pre>
+<p>Now the program is memory as a process. We have it hit a brekpoint at beginning of <code>main</code> to see the locations in memory of the program. The <code>deobfuscation</code> is called at address <code>0x559ab2a2d31d</code>. We now set a breakpoint at the next instruction <code>0x559ab2a2d322</code>.</p>
+<pre><code class="language-radare2" data-lang="radare2">dcu 0x559ab2a2d322
+</code></pre><p>Since we have hit the breakpoint, let&rsquo;s capture what all happened.
+The function is called and it has filled the location <code>s1</code> in memory with a string which is compared later on with the user input. Note that the <code>s1</code> address is stored in register <code>rdi</code>. Hence now the string created by the function is in the memory address which <code>rdi</code> holds, check 3 instructions from <code>0x559ab2a2d316</code>.</p>
+<p>Examining strings at the memory location in <code>rdi</code></p>
+<pre><code class="language-radare2" data-lang="radare2">x/s @ rdi
+</code></pre><pre><code>0x559ab37002a0 gigem{p455w0rd_1n_m3m0ry1}
+0x559ab37002ba A
+0x559ab37002cb 
+</code></pre>
+<p>And there we have the flag! It says <em>password_in_memory</em> 😆</p>
+
+</main>
+    <footer>
+  <hr/>
+</footer>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-162174989-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+	  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<meta property="og:title" content="Ramblings from Vighnesh" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="" />
+<meta property="og:image" content="flying_toaster.jpg" />
+<meta property="og:description" content="">
+<link rel="canonical" href="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack/0.8.1/hack.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack/0.8.1/dark.css">
+<style>
+a::after,
+a[rel*="external"] {
+  content: " " url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20class='i-external'%20viewBox='0%200%2032%2032'%20width='14'%20height='14'%20fill='none'%20stroke='%23ff9800'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='9.38%'%3E%3Cpath%20d='M14%209%20L3%209%203%2029%2023%2029%2023%2018%20M18%204%20L28%204%2028%2014%20M28%204%20L14%2018'/%3E%3C/svg%3E");
+}
+</style>
+
+  </head>
+  <body class="hack dark main container">
+    <header>
+  
+  <nav>
+    
+    
+      <a class="" href="/">Home</a>
+    
+      <a class="" href="/about/">About</a>
+    
+      <a class="active" href="/post/">Posts</a>
+    
+  </nav>
+
+
+</header>
+    <main>
+  <h1>WFH Hack with Attiny85</h1>
+  
+  
+	<a href="https://boot-error.github.io/tags/arduino/">arduino</a>
+  
+	<a href="https://boot-error.github.io/tags/automation/">automation</a>
+  
+	<a href="https://boot-error.github.io/tags/usb/">usb</a>
+  
+  <br/>
+  <br/>
+  <details>
+	  <summary>Table of Contents</summary>
+	  <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#my-smart-friends-hack">My Smart friend&rsquo;s hack</a></li>
+      </ul>
+    </li>
+    <li><a href="#meet-attiny85">Meet Attiny85</a></li>
+    <li><a href="#the-mouse-jiggler">The Mouse Jiggler</a></li>
+  </ul>
+</nav>
+  </details>
+  
+  <p>I&rsquo;m restricted to using my Work Laptop for everything related to work and it&rsquo;s all great and usual, but with a minor inconvenience.
+The laptop hibernates after couple of minutes of inactivity, and If walk away for a coffee, I&rsquo;ll miss on important notification, delaying my response.</p>
+<p>And I can&rsquo;t change the screensaver settings, which is acceptable. Hence, I came up with this hack.</p>
+<!-- raw HTML omitted -->
+<h3 id="my-smart-friends-hack">My Smart friend&rsquo;s hack</h3>
+<p>A friend of mine came up with a simple hack, where he would place his Analog Watch underneath the mouse&rsquo;s optical sensor. The movement of the second hand would constantly trigger some mouse activity which stops his laptop from hibernating.</p>
+<p>This is great, but I felt it too tedious and I didn&rsquo;t have a watch (duh I got my smartphone to check time). I needed a better solution.</p>
+<h2 id="meet-attiny85">Meet Attiny85</h2>
+<p>Attiny85 is an Atmega Series microcontroller and the package above is size of a thumb with a PCB craved out like a USB port. I can write Arduino code which can run on this tiny microcontroller. This includes writing a programmable USB HID 😈</p>
+<p><img src="/post/images/digispark_attiny85.jpg" alt="Attiny 85"></p>
+<p>I had one lying around, time to build one.</p>
+<h2 id="the-mouse-jiggler">The Mouse Jiggler</h2>
+<p>To trick my laptop into thinking I&rsquo;m using it, the Attiny 85 program does the following in bare minimum</p>
+<ul>
+<li>For Every 2 minutes,
+<ul>
+<li>move the mouse pointer to any direction</li>
+<li>move the mouse pointer back to where it was</li>
+</ul>
+</li>
+</ul>
+<p>For the computer, this is a mouse activity meaning the user is active. The computer would reset its screen saver timeout.</p>
+<p>Follow instructions <a href="https://www.instructables.com/Digispark-Attiny-85-With-Arduino-IDE/">here</a> to setup Arduino IDE for programming this board</p>
+<p>Here is the code, the phantom user to my computer!</p>
+<script type="application/javascript" src="https://gist.github.com/Boot-Error/394b2102a1a23b8baf0bc80c18ebe898.js"></script>
+
+<p>Compile and upload the sketch and watch your computer tricked into thinking you are always working!</p>
+<p>This Mouse Jiggler won&rsquo;t even interrupt while you are working since it&rsquo;s actions are so swift, unless you do a lot of art using mouse then prepare for some erroneous lines in your drawings.</p>
+
+</main>
+    <footer>
+  <hr/>
+</footer>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-162174989-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

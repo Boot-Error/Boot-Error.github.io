@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+	  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<meta property="og:title" content="Ramblings from Vighnesh" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="" />
+<meta property="og:image" content="flying_toaster.jpg" />
+<meta property="og:description" content="">
+<link rel="canonical" href="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack/0.8.1/hack.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack/0.8.1/dark.css">
+<style>
+a::after,
+a[rel*="external"] {
+  content: " " url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20class='i-external'%20viewBox='0%200%2032%2032'%20width='14'%20height='14'%20fill='none'%20stroke='%23ff9800'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='9.38%'%3E%3Cpath%20d='M14%209%20L3%209%203%2029%2023%2029%2023%2018%20M18%204%20L28%204%2028%2014%20M28%204%20L14%2018'/%3E%3C/svg%3E");
+}
+</style>
+
+  </head>
+  <body class="hack dark main container">
+    <header>
+  
+  <nav>
+    
+    
+      <a class="" href="/">Home</a>
+    
+      <a class="" href="/about/">About</a>
+    
+      <a class="" href="/post/">Posts</a>
+    
+  </nav>
+
+
+</header>
+    <main>
+  <h1>radare</h1>
+  
+    <article>
+      <h2><a href="https://boot-error.github.io/post/cracker_barrel_writeup/">cracker_barrel - AUCTF writeup</a></h2>
+      <p>In AUCTF 2020 under rev section, the challenge cracker barrel had a binary given running on remote.
+Let&rsquo;s rev it up.
+recon o cracker_barrel aaa i fd 6 file cracker_barrel size 0x43e8 humansz 17.0K mode r-x format elf64 iorw false blksz 0x0 block 0x100 type DYN (Shared object file) arch x86 baddr 0x0 binsz 15399 bintype elf bits 64 canary true class ELF64 compiler GCC: (Ubuntu 9.2.1-9ubuntu2) 9.2.1 20191008 crypto false endian little havecode true intrp /lib64/ld-linux-x86-64.</p>
+    </article>
+  
+    <article>
+      <h2><a href="https://boot-error.github.io/post/plain_jane_writeup/">plain_jane - AUCTF writeup</a></h2>
+      <p>In AUCTF 2020 under rev section, the challenge plain jane had a assembly code. It said, we need to figure out what the program returns.
+Here&rsquo;s what I did.
+First, compile it to binary using gcc
+Compile gcc -o plain_jane plain_jane.s Then open the binary in radare.
+Recon o plain_jane aaa i fd 7 file plain_jane size 0x4040 humansz 16.1K mode r-x format elf64 iorw false blksz 0x0 block 0x100 type DYN (Shared object file) arch x86 baddr 0x0 binsz 14714 bintype elf bits 64 canary false class ELF64 compiler GCC: (Arch Linux 9.</p>
+    </article>
+  
+    <article>
+      <h2><a href="https://boot-error.github.io/post/vault-writeup/">vault - TAMUctf writeup</a></h2>
+      <p>For me its been a long while since I challenged in a ctf competition. So I decided to play one because we in &ldquo;Quarantine&rdquo; anyway. This challenge is from TAMUctf 2020 under &ldquo;Reversing&rdquo; named as &lsquo;vault&rsquo;.
+I swear anything that says vault as a introductory challenge is a good way to brush up your basic debugging skills, because its the printf(&quot;hello, world&quot;); of reverse engineering and binary analysis.
+I&rsquo;ll be using radare2 using jupyter-radare2 kernel.</p>
+    </article>
+  
+</main>
+    <footer>
+  <nav>
+  <p>
+    
+	<span>1 - 1</span>
+    
+  </p>
+</nav>
+
+</footer>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-162174989-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

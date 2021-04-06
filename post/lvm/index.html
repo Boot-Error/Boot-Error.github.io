@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+	  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<meta property="og:title" content="Ramblings from Vighnesh" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="" />
+<meta property="og:image" content="flying_toaster.jpg" />
+<meta property="og:description" content="">
+<link rel="canonical" href="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack/0.8.1/hack.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack/0.8.1/dark.css">
+<style>
+a::after,
+a[rel*="external"] {
+  content: " " url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20class='i-external'%20viewBox='0%200%2032%2032'%20width='14'%20height='14'%20fill='none'%20stroke='%23ff9800'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='9.38%'%3E%3Cpath%20d='M14%209%20L3%209%203%2029%2023%2029%2023%2018%20M18%204%20L28%204%2028%2014%20M28%204%20L14%2018'/%3E%3C/svg%3E");
+}
+</style>
+
+  </head>
+  <body class="hack dark main container">
+    <header>
+  
+  <nav>
+    
+    
+      <a class="" href="/">Home</a>
+    
+      <a class="" href="/about/">About</a>
+    
+      <a class="active" href="/post/">Posts</a>
+    
+  </nav>
+
+
+</header>
+    <main>
+  <h1>Adopting LVM</h1>
+  
+  
+	<a href="https://boot-error.github.io/tags/archlinux/">archlinux</a>
+  
+	<a href="https://boot-error.github.io/tags/lvm/">lvm</a>
+  
+  <br/>
+  <br/>
+  <details>
+	  <summary>Table of Contents</summary>
+	  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-trouble">The Trouble</a></li>
+    <li><a href="#getting-better-at-the-game">Getting better at the game</a></li>
+    <li><a href="#adopting-lvm">Adopting LVM</a></li>
+    <li><a href="#my-setup">My Setup</a>
+      <ul>
+        <li><a href="#physical-volume-setup">Physical Volume Setup</a></li>
+        <li><a href="#volume-groups-setup">Volume Groups Setup</a></li>
+        <li><a href="#logical-volumes">Logical Volumes</a></li>
+        <li><a href="#final-structure">Final structure</a></li>
+      </ul>
+    </li>
+    <li><a href="#theres-more">There&rsquo;s more</a></li>
+  </ul>
+</nav>
+  </details>
+  
+  <p>I use Arch Linux on every machine in my possession.</p>
+<p>Within a year of its use, I realized what Arch Linux F**kups really mean and why people cry about it.</p>
+<p>But I figured out a escape to a problem I always faced during a f**kup, It&rsquo;s the disk partitions and re-installation.</p>
+<!-- raw HTML omitted -->
+<h2 id="the-trouble">The Trouble</h2>
+<p>Traditionally you would have a setup like this.</p>
+<pre><code>n00b:
+
+- /dev/sda1 
+    - / (OS installation)
+        - /home/user (home folder)
+</code></pre>
+<p>Your everyhing is in the root partition. Now if by some reason your <code>root</code> is screwed, you have to spend time backing up
+your <code>home</code> partition. And if you are a data hoader, you be spending time in backing it up to wipe clean the partition for fresh install.</p>
+<p>I have been with this setup before using Arch Linux but Ubuntu didn&rsquo;t screw itself up that often.</p>
+<pre><code>intermediate:
+
+- /dev/sda1
+    - / (OS installation)
+- /dev/sda2
+    - /home/use (home folder)
+</code></pre>
+<p>Now here are utilizing disk partitioning for <code>home</code> and <code>root</code> partitions.</p>
+<p>Why? because organization. But most importantly, there is separation b/w them. There is no need to worry about first case anymore.
+Just wipe <code>root</code> and install again, you&rsquo;ll be up with fresh install with all your files not even touched.</p>
+<p>This was me for a whole again. It worked flawlessly, took be 1-2 days to get back on track with packages and necessary software.</p>
+<h2 id="getting-better-at-the-game">Getting better at the game</h2>
+<p>The f**kups got better since then, some of them were</p>
+<ul>
+<li>A update got interrupted due to network failure, didn&rsquo;t verify the packages and it failed to install a critical library <code>i18n</code>, which was a dependency to many software including <code>pacman</code>.
+I figured out since it was installtion problem, might well re-install it. But <code>pacman</code> depended on this. I somehow fixed it by manually installing this libary, had to do some symlinks.</li>
+<li>Some startup service didn&rsquo;t start and the system refused to give me a shell. which required me a re-install.</li>
+</ul>
+<p>The quest to tweak my Arch Linux to perfection was always on. This led me to <code>lvm</code>, it all sounded fancy because of it capabilities like <code>Logical Paritions</code> and its dynamic abilities.</p>
+<h2 id="adopting-lvm">Adopting LVM</h2>
+<p>I found out about LVM while browsing list of applications in ArchWiki. It was the moment it struck that this is the setup I have been in grave need. A solution to a minor inconvinience.</p>
+<p>One particular feature which I love about LVM is</p>
+<div class="alert alert-success">Expand/Shrink partitions without worrying about alignment and free adjacent spaces</div>
+
+<p>That&rsquo;s right, running out of space because you use too many docker images? Expand your <code>root</code> on the fly without worrying about making up space adjacent to it.
+This also means I can have multiple distros saved in rather small partitons because it can resized whenever required.</p>
+<p>Learn more about it</p>
+<ul>
+<li><a href="https://www.digitalocean.com/community/tutorials/an-introduction-to-lvm-concepts-terminology-and-operations">An Introduction to LVM</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/LVM">LVM - ArchWiki</a></li>
+</ul>
+<h2 id="my-setup">My Setup</h2>
+<p>My setup to LVM is really simple. The only reason to choose this setup to have flexibility on managing partition without a headache, which means it takes some effort to set them up.</p>
+<h3 id="physical-volume-setup">Physical Volume Setup</h3>
+<p>I have single 256GB SSD in my thinkpad x1c which I have split into 2 physical partitions <code>/dev/sda2</code> and <code>/dev/sda3</code>, <code>/dev/sda1</code> is the boot partition.</p>
+<p>These partitions are configured to be our physical partitions. One explicitly for <code>distros</code> and other for <code>datadir</code> which will be <code>home</code> partitions.</p>
+<pre><code>$ sudo pvs
+  PV         VG      Fmt  Attr PSize    PFree
+  /dev/sda2  distros lvm2 a--  &lt;118.71g &lt;68.71g
+  /dev/sda3  datadir lvm2 a--   119.26g  49.26g
+</code></pre>
+<p>If you own a system with hybrid disk setup, one being SSD usually 128GB and HDD of 1TB, the physical volumes can be set to use <code>root</code> to be loaded from SSD and <code>home</code> from HDD. Or want to be a master of optimization crafts, use parts of <code>root</code> and <code>home</code> in your SSD to speed up boot time and load the rest like <code>Music</code> from HDD.</p>
+<p>Such an ambition would be a mess to implement, but LVM makes it painless.</p>
+<h3 id="volume-groups-setup">Volume Groups Setup</h3>
+<p>Volume groups are collection of physical volumes, you can collate multiple physical volumes into a single group.
+I choose to mirror my physical volumes as volume groups</p>
+<pre><code>$ sudo vgs
+  VG      #PV #LV #SN Attr   VSize    VFree
+  datadir   1   1   0 wz--n-  119.26g  49.26g
+  distros   1   1   0 wz--n- &lt;118.71g &lt;68.71g
+</code></pre>
+<p>Volume groups gives you an abstract over your physical volumes, the <em>logical volumes</em> created are categorized into these volumes.</p>
+<h3 id="logical-volumes">Logical Volumes</h3>
+<p>This is the abstraction I seek to implement. On my X1C, this is the setup</p>
+<pre><code>$ sudo lvs
+  LV                   VG      Attr       LSize  
+  booterror-home-crypt datadir -wi-ao---- 70.00g
+  arch-main            distros -wi-ao---- 50.00g
+</code></pre>
+<p><code>arch-main</code> is my current Arch Linux installation and <code>booterror-home-crypt</code> is the root partition for user <code>booterror</code> which is a <code>LUKS</code> encrypted partition. And Yes keep your personal data encrypted, will save you from intrusion by physical access like a theft 😆</p>
+<p>Note that the size of the partitions, I can use rest of free space in volume groups to make new partitions for different distros and respective users.</p>
+<div class="alert alert-warning">Make sure you read this <a href="https://wiki.archlinux.org/index.php/LVM#Resizing_the_logical_volume_and_file_system_separately">guide</a> on ArchWiki before resizing an LVM partitions</div>
+
+<h3 id="final-structure">Final structure</h3>
+<p>Here is my final disk structure with all the necessary complexities added just so I can <em>resize on the fly</em></p>
+<pre><code>$ lsblk
+NAME                               MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+sda                                  8:0    0 238.5G  0 disk
+├─sda1                               8:1    0   511M  0 part  /boot
+├─sda2                               8:2    0 118.7G  0 part
+│ └─distros-arch--main             254:0    0    50G  0 lvm   /
+└─sda3                               8:3    0 119.3G  0 part
+  └─datadir-booterror--home--crypt 254:1    0    70G  0 lvm
+    └─booterror-home               254:2    0    70G  0 crypt
+</code></pre>
+<h2 id="theres-more">There&rsquo;s more</h2>
+<p>I figured out LVM can do <a href="https://wiki.archlinux.org/index.php/LVM#Snapshots">snapshotting</a>, essentially a time machine for your partitions. One useful setup would be to have a snapshot of your bare minimum arch linux installation as a snapshot, whenever there is a f**kup and its beyond fix, just revert to this snapshot. You can keep a list of all packages you need to install in a txt file and run pacman right away after reverting to this bare minimum state.</p>
+<p>A snapshot setup would be more rewarding than a abstract just so I can resize on the fly.</p>
+<p>I need to experiment this setup, until then&hellip;</p>
+
+</main>
+    <footer>
+  <hr/>
+</footer>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-162174989-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

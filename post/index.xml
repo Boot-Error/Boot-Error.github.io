@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Vighnesh&#39;s Musings</title>
+    <link>https://boot-error.github.io/post/</link>
+    <description>Recent content in Posts on Vighnesh&#39;s Musings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    
+	<atom:link href="https://boot-error.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Adopting LVM</title>
+      <link>https://boot-error.github.io/post/lvm/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/post/lvm/</guid>
+      <description>I use Arch Linux on every machine in my possession.
+Within a year of its use, I realized what Arch Linux F**kups really mean and why people cry about it.
+But I figured out a escape to a problem I always faced during a f**kup, It&amp;rsquo;s the disk partitions and re-installation.
+The Trouble Traditionally you would have a setup like this.
+n00b: - /dev/sda1 - / (OS installation) - /home/user (home folder)  Your everyhing is in the root partition.</description>
+    </item>
+    
+    <item>
+      <title>cracker_barrel - AUCTF writeup</title>
+      <link>https://boot-error.github.io/post/cracker_barrel_writeup/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/post/cracker_barrel_writeup/</guid>
+      <description>In AUCTF 2020 under rev section, the challenge cracker barrel had a binary given running on remote.
+Let&amp;rsquo;s rev it up.
+recon o cracker_barrel aaa i fd 6 file cracker_barrel size 0x43e8 humansz 17.0K mode r-x format elf64 iorw false blksz 0x0 block 0x100 type DYN (Shared object file) arch x86 baddr 0x0 binsz 15399 bintype elf bits 64 canary true class ELF64 compiler GCC: (Ubuntu 9.2.1-9ubuntu2) 9.2.1 20191008 crypto false endian little havecode true intrp /lib64/ld-linux-x86-64.</description>
+    </item>
+    
+    <item>
+      <title>plain_jane - AUCTF writeup</title>
+      <link>https://boot-error.github.io/post/plain_jane_writeup/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/post/plain_jane_writeup/</guid>
+      <description>In AUCTF 2020 under rev section, the challenge plain jane had a assembly code. It said, we need to figure out what the program returns.
+Here&amp;rsquo;s what I did.
+First, compile it to binary using gcc
+Compile gcc -o plain_jane plain_jane.s Then open the binary in radare.
+Recon o plain_jane aaa i fd 7 file plain_jane size 0x4040 humansz 16.1K mode r-x format elf64 iorw false blksz 0x0 block 0x100 type DYN (Shared object file) arch x86 baddr 0x0 binsz 14714 bintype elf bits 64 canary false class ELF64 compiler GCC: (Arch Linux 9.</description>
+    </item>
+    
+    <item>
+      <title>vault - TAMUctf writeup</title>
+      <link>https://boot-error.github.io/post/vault-writeup/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/post/vault-writeup/</guid>
+      <description>For me its been a long while since I challenged in a ctf competition. So I decided to play one because we in &amp;ldquo;Quarantine&amp;rdquo; anyway. This challenge is from TAMUctf 2020 under &amp;ldquo;Reversing&amp;rdquo; named as &amp;lsquo;vault&amp;rsquo;.
+I swear anything that says vault as a introductory challenge is a good way to brush up your basic debugging skills, because its the printf(&amp;quot;hello, world&amp;quot;); of reverse engineering and binary analysis.
+I&amp;rsquo;ll be using radare2 using jupyter-radare2 kernel.</description>
+    </item>
+    
+    <item>
+      <title>WFH Hack with Attiny85</title>
+      <link>https://boot-error.github.io/post/wfh_hack_using_attiny85/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/post/wfh_hack_using_attiny85/</guid>
+      <description>I&amp;rsquo;m restricted to using my Work Laptop for everything related to work and it&amp;rsquo;s all great and usual, but with a minor inconvenience. The laptop hibernates after couple of minutes of inactivity, and If walk away for a coffee, I&amp;rsquo;ll miss on important notification, delaying my response.
+And I can&amp;rsquo;t change the screensaver settings, which is acceptable. Hence, I came up with this hack.
+My Smart friend&amp;rsquo;s hack A friend of mine came up with a simple hack, where he would place his Analog Watch underneath the mouse&amp;rsquo;s optical sensor.</description>
+    </item>
+    
+  </channel>
+</rss>

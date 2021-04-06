@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Vighnesh&#39;s Musings</title>
+    <link>https://boot-error.github.io/tags/</link>
+    <description>Recent content in Tags on Vighnesh&#39;s Musings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    
+	<atom:link href="https://boot-error.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>archlinux</title>
+      <link>https://boot-error.github.io/tags/archlinux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/tags/archlinux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>arduino</title>
+      <link>https://boot-error.github.io/tags/arduino/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/tags/arduino/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>automation</title>
+      <link>https://boot-error.github.io/tags/automation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/tags/automation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ctf-writeup</title>
+      <link>https://boot-error.github.io/tags/ctf-writeup/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/tags/ctf-writeup/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>lvm</title>
+      <link>https://boot-error.github.io/tags/lvm/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/tags/lvm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>radare</title>
+      <link>https://boot-error.github.io/tags/radare/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/tags/radare/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>reversing</title>
+      <link>https://boot-error.github.io/tags/reversing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/tags/reversing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>usb</title>
+      <link>https://boot-error.github.io/tags/usb/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://boot-error.github.io/tags/usb/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
