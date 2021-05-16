@@ -1,0 +1,106 @@
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <title>WFH Hack with Attiny85</title>
+    <link rel="stylesheet" href="/css/base.css"/>
+    <link rel="stylesheet" href="/css/blog.css"/>
+  </head>
+  <body>
+    <main>
+      <nav class="container max-w-screen-md mx-auto mt-7 px-5">
+  <div class="flex flex-row">
+    <div class="flex-grow order-1">
+      <a href="/" class="text-lg lg:text-lg font-bold hover:underline text-secondary">
+          Vighnesh's Musings
+      </a>
+    </div>
+    <div class="flex-shrink order-last">
+      <div class="grid grid-cols-2 my-auto">
+        <img class="h-5 w-5 mx-2 my-1" src="/img/github.svg" />
+        <img class="h-5 w-5 mx-2 my-1" src="/img/twitter.svg" />
+      </div>
+    </div>
+  </div>
+</nav>
+
+      <div class="container max-w-screen-md mx-auto lg:mt-20">
+        <article>
+          <header class="pt-7 pb-3 lg:mt-20">
+            <h1 class="text-5xl py-3 px-5">WFH Hack with Attiny85</h1>
+            <div class="flex display-x pt-3">
+              <time datetime="Thu Mar 25 2021 00:00:00 GMT+0000 (Coordinated Universal Time)" class="text-sm text-primary font-bold px-5">
+                25th Mar, 2021
+              </time>
+              <div class="text-sm">
+<section>
+  <ul class="flex flex-wrap">
+    
+    <li>
+      <a class="font-semibold hover:underline px-1" href="/tag/arduino"
+        >#arduino</a
+      >
+    </li>
+    
+    <li>
+      <a class="font-semibold hover:underline px-1" href="/tag/usb"
+        >#usb</a
+      >
+    </li>
+    
+    <li>
+      <a class="font-semibold hover:underline px-1" href="/tag/automation"
+        >#automation</a
+      >
+    </li>
+    
+  </ul>
+</section>
+</div>
+            </div>
+          </header>
+          <p class="markdown">I'm restricted to using my Work Laptop for everything related to work and it's all great and usual, but with a minor inconvenience.
+The laptop hibernates after couple of minutes of inactivity, and If walk away for a coffee, I'll miss on important notification, delaying my response.</p>
+<p class="markdown">And I can't change the screensaver settings, which is acceptable. Hence, I came up with this hack.</p>
+<!-- more -->
+<h3 id="my-smart-friend's-hack" class="markdown">My Smart friend's hack <a class="header-anchor markdown" href="#my-smart-friend's-hack">↩</a></h3>
+<p class="markdown">A friend of mine came up with a simple hack, where he would place his Analog Watch underneath the mouse's optical sensor. The movement of the second hand would constantly trigger some mouse activity which stops his laptop from hibernating.</p>
+<p class="markdown">This is great, but I felt it too tedious and I didn't have a watch (duh I got my smartphone to check time). I needed a better solution.</p>
+<h2 id="meet-attiny85" class="markdown">Meet Attiny85 <a class="header-anchor markdown" href="#meet-attiny85">↩</a></h2>
+<p class="markdown">Attiny85 is an Atmega Series microcontroller and the package above is size of a thumb with a PCB craved out like a USB port. I can write Arduino code which can run on this tiny microcontroller. This includes writing a programmable USB HID 😈</p>
+<div class="image-container"><img src="/img/digispark_attiny85.jpg" alt="Attiny 85" class="markdown"></div>
+<p class="markdown">I had one lying around, time to build one.</p>
+<h2 id="the-mouse-jiggler" class="markdown">The Mouse Jiggler <a class="header-anchor markdown" href="#the-mouse-jiggler">↩</a></h2>
+<p class="markdown">To trick my laptop into thinking I'm using it, the Attiny 85 program does the following in bare minimum</p>
+<ul class="markdown">
+<li class="markdown">For Every 2 minutes,
+<ul class="markdown">
+<li class="markdown">move the mouse pointer to any direction</li>
+<li class="markdown">move the mouse pointer back to where it was</li>
+</ul>
+</li>
+</ul>
+<p class="markdown">For the computer, this is a mouse activity meaning the user is active. The computer would reset its screen saver timeout.</p>
+<p class="markdown">Follow instructions <a href="https://www.instructables.com/Digispark-Attiny-85-With-Arduino-IDE/" class="markdown">here</a> to setup Arduino IDE for programming this board</p>
+<p class="markdown">Here is the code, the phantom user to my computer!</p>
+<p class="markdown">Compile and upload the sketch and watch your computer tricked into thinking you are always working!</p>
+<p class="markdown">This Mouse Jiggler won't even interrupt while you are working since it's actions are so swift, unless you do a lot of art using mouse then prepare for some erroneous lines in your drawings.</p>
+
+        </article>
+      </div>
+    </main>
+    <footer>
+  <div class="my-5">
+    <div class="flex flex-row">
+      <div class="flex-grow text-center gaps-4">
+        <a class="font-bold text-gruvred" href="/">home</a>
+        <a class="font-bold text-gruvred" href="/about">about</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>
