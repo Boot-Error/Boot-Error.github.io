@@ -84,7 +84,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.html",
-    "revision": "7a13d18ec2eead1068e7d57f35a7bdd6"
+    "revision": "32f0b873ab352ef462bfa4ad9b7e3681"
   },
   {
     "url": "manifest.json",
@@ -112,51 +112,51 @@ self.__precacheManifest = [
   },
   {
     "url": "tag/all/index.html",
-    "revision": "2307c24cf3bd2b400b350f2aa7b71f20"
+    "revision": "827f54e4bd369e1f5f0b4ab436987832"
   },
   {
     "url": "tag/allTags/index.html",
-    "revision": "0c80342c3cebcdda63d1f9e7ee13866f"
+    "revision": "c764e8a04179ef5913c7616b7f4f66e2"
   },
   {
     "url": "tag/archlinux/index.html",
-    "revision": "7225bd54685aa34252bbb89b838fb053"
+    "revision": "359b45331b8666be8027ff2d1942fb4c"
   },
   {
     "url": "tag/arduino/index.html",
-    "revision": "78ad5e2ef7985b2bf1b9c5f4ed83d8a9"
+    "revision": "0fe9a1111e1cb4375f35a51819c4e874"
   },
   {
     "url": "tag/automation/index.html",
-    "revision": "53653d1aa742a15beaca3f36719952d6"
+    "revision": "699cce5ac75686eb8df5f91e6c16f800"
   },
   {
     "url": "tag/ctf-writeup/index.html",
-    "revision": "8c0743b9c53e6c2e90d7cfebd9039525"
+    "revision": "0c4c881f4659c0bd071d1806ec05ce87"
   },
   {
     "url": "tag/lvm/index.html",
-    "revision": "40db1a700af8c2919887698854ca925e"
+    "revision": "ed8a8da4e05335cfd3e4d1f88baf3f47"
   },
   {
     "url": "tag/posts/index.html",
-    "revision": "784d507b354ab3e0a0636d5d872d307a"
+    "revision": "7276961df9608ac84e54757e1ca08bbb"
   },
   {
     "url": "tag/postsByYear/index.html",
-    "revision": "12d431e06e9ece3bc1ddbf6192ca4481"
+    "revision": "2208e17f902590de51712f574b771165"
   },
   {
     "url": "tag/radare/index.html",
-    "revision": "de441f42de0b5827eb1d40bad06abd72"
+    "revision": "609a54fbdda1b5410d65cb105cb0f4c7"
   },
   {
     "url": "tag/reversing/index.html",
-    "revision": "a224ceed4fd8802172d5e18a01146e5a"
+    "revision": "62446c473699dc0690fe85159e658f46"
   },
   {
     "url": "tag/usb/index.html",
-    "revision": "5f29c44a86ed4f8c966b3a19425a1ff1"
+    "revision": "f21acd61e921242feaeba71de5042437"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
