@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <title></title>
-    <link rel="stylesheet" href="/css/base.css">
-<link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="manifest" href="manifest.json">
   </head>
   <body>
     <main>
@@ -23,9 +24,16 @@
     </div>
     <div class="flex-shrink order-last">
       <div class="grid grid-cols-2 my-auto">
-        <a href="https://github.com/Boot-Error" target="_blank"><img class="h-5 w-5 mx-2 my-1" src="/img/github.svg"/></a>
-        <a href="https://twitter.com/b00terr" target="_blank"><img class="h-5 w-5 mx-2 my-1" src="/img/twitter.svg"/></a>
-      </div>
+  
+  <a href="https://twitter.com/b00terr" target="_blank">
+    <img class="h-5 w-5 mx-2 my-1" src="/img/twitter.svg" alt="vighnesh's twitter profile"/>
+  </a>
+  
+  <a href="https://github.com/Boot-Error" target="_blank">
+    <img class="h-5 w-5 mx-2 my-1" src="/img/github.svg" alt="vighnesh's github profile"/>
+  </a>
+  
+</div>
     </div>
   </div>
 </nav>
@@ -44,7 +52,9 @@
       <a class="font-bold text-2xl text-secondary" href="/post/lvm/">Adopting LVM</a>
     </div>
     <div class="pb-3">
+      
       <p>I have been using LVM on my Archlinux and it has saved me countless hours of dispair.</p>
+      
     </div>
     <div>
 <section>
@@ -71,5 +81,9 @@
 </section>
 
     </main>
+    <script>
+  if ("serviceWorker" in navigator)
+    navigator.serviceWorker.register("/service-worker.js");
+</script> 
   </body>
 </html>

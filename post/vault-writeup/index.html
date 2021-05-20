@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <title>TAMUctf writeup - vault</title>
-    <link rel="stylesheet" href="/css/base.css">
-<link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="/css/blog.css"/>
+    <link rel="stylesheet" href="/css/prism-theme.css">
   </head>
   <body>
     <main>
@@ -21,16 +23,23 @@
     </div>
     <div class="flex-shrink order-last">
       <div class="grid grid-cols-2 my-auto">
-        <a href="https://github.com/Boot-Error" target="_blank"><img class="h-5 w-5 mx-2 my-1" src="/img/github.svg"/></a>
-        <a href="https://twitter.com/b00terr" target="_blank"><img class="h-5 w-5 mx-2 my-1" src="/img/twitter.svg"/></a>
-      </div>
+  
+  <a href="https://twitter.com/b00terr" target="_blank">
+    <img class="h-5 w-5 mx-2 my-1" src="/img/twitter.svg" alt="vighnesh's twitter profile"/>
+  </a>
+  
+  <a href="https://github.com/Boot-Error" target="_blank">
+    <img class="h-5 w-5 mx-2 my-1" src="/img/github.svg" alt="vighnesh's github profile"/>
+  </a>
+  
+</div>
     </div>
   </div>
 </nav>
       <div class="container max-w-screen-md mx-auto lg:mt-20">
         <article>
           <header class="px-5 pt-7 pb-3 lg:mt-20">
-            <h1 class="text-5xl py-3">TAMUctf writeup - vault</h1>
+            <h1 class="text-5xl py-3 leading-snug">TAMUctf writeup - vault</h1>
             <div class="flex display-y pt-3 display-grey-500">
               <time datetime="Sun Mar 29 2020 00:00:00 GMT+0000 (Coordinated Universal Time)" class="text-base text-primary font-bold">
                 29th Mar, 2020
@@ -68,10 +77,10 @@ This challenge is from <a href="https://tamuctf.com/challenges#VAULT" class="mar
 <p class="markdown">I'll be using <code>radare2</code> using <code>jupyter-radare2</code> kernel.</p>
 <h3 id="recon" class="markdown">Recon <a class="header-anchor markdown" href="#recon">↩</a></h3>
 <p class="markdown">First let's analyze the binary.</p>
-<pre><code class="language-radare2">o vault
+<pre><code>o vault
 aaa
 </code></pre>
-<pre><code class="language-radare2">i
+<pre><code>i
 </code></pre>
 <pre><code>fd       4
 file     vault
@@ -118,7 +127,7 @@ va       true
 <p class="markdown">It's ELF 64 and not <code>stripped</code>. Awww yea!</p>
 <h3 id="function-calls" class="markdown">Function calls <a class="header-anchor markdown" href="#function-calls">↩</a></h3>
 <p class="markdown">Analyzing the function call stack, it's evident that it takes input from user using <code>fgets</code> and displays results.</p>
-<pre><code class="language-radare2">aflm
+<pre><code>aflm
 </code></pre>
 <pre><code>entry0:
     reloc.__libc_start_main
@@ -144,7 +153,7 @@ main:
 </code></pre>
 <p class="markdown">And <code>deobfuscate</code> is a defined function. Might be something related to password?</p>
 <h3 id="analyze-main" class="markdown">Analyze <code>main</code> <a class="header-anchor markdown" href="#analyze-main">↩</a></h3>
-<pre><code class="language-radare2">s main
+<pre><code>s main
 pdf
 </code></pre>
 <pre><code>┌ 207: int main (int argc, char **argv, char **envp);
@@ -205,7 +214,7 @@ pdf
 <p class="markdown">And then the two strings are compared, if they are equal it stays &quot;That's the password and exits&quot; ?!?</p>
 <p class="markdown">At this stage, I'm pretty sure the string in <code>s1</code> created from <code>deobfuscate</code> is the flag we need.</p>
 <p class="markdown">Let's check the disassembly of <code>deobfuscate</code></p>
-<pre><code class="language-radare2">s sym.deobfuscate
+<pre><code>s sym.deobfuscate
 pdf
 </code></pre>
 <pre><code>┌ 324: sym.deobfuscate (char *arg1);
@@ -258,11 +267,11 @@ pdf
 <p class="markdown">It's huge, and I'm too lazy to do it. So here is the thing, the function only takes an memory address to strcpy the computed password and it doesn't require any parameter that changes i.e it's a <a href="https://en.wikipedia.org/wiki/Pure_function" class="markdown">pure</a> functions? I'm looking at you, fp nerds.</p>
 <p class="markdown">Why don't we just debug it.</p>
 <h3 id="debugging-to-get-the-flag" class="markdown">Debugging to get the flag <a class="header-anchor markdown" href="#debugging-to-get-the-flag">↩</a></h3>
-<pre><code class="language-radare2">ood
+<pre><code>ood
 </code></pre>
 <pre><code>73743
 </code></pre>
-<pre><code class="language-radare2">dcu main
+<pre><code>dcu main
 pd
 </code></pre>
 <pre><code>┌ 207: int main (int argc, char **argv, char **envp);
@@ -320,12 +329,12 @@ pd
 └           0x559ab2a2d397      c3             ret
 </code></pre>
 <p class="markdown">Now the program is memory as a process. We have it hit a brekpoint at beginning of <code>main</code> to see the locations in memory of the program. The <code>deobfuscation</code> is called at address <code>0x559ab2a2d31d</code>. We now set a breakpoint at the next instruction <code>0x559ab2a2d322</code>.</p>
-<pre><code class="language-radare2">dcu 0x559ab2a2d322
+<pre><code>dcu 0x559ab2a2d322
 </code></pre>
 <p class="markdown">Since we have hit the breakpoint, let's capture what all happened.
 The function is called and it has filled the location <code>s1</code> in memory with a string which is compared later on with the user input. Note that the <code>s1</code> address is stored in register <code>rdi</code>. Hence now the string created by the function is in the memory address which <code>rdi</code> holds, check 3 instructions from <code>0x559ab2a2d316</code>.</p>
 <p class="markdown">Examining strings at the memory location in <code>rdi</code></p>
-<pre><code class="language-radare2">x/s @ rdi
+<pre><code>x/s @ rdi
 </code></pre>
 <pre><code>0x559ab37002a0 gigem{p455w0rd_1n_m3m0ry1}
 0x559ab37002ba A
@@ -346,5 +355,9 @@ The function is called and it has filled the location <code>s1</code> in memory 
   </div>
 </footer>
 
+    <script>
+  if ("serviceWorker" in navigator)
+    navigator.serviceWorker.register("/service-worker.js");
+</script> 
   </body>
 </html>

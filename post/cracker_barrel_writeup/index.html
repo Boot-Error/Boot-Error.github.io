@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <title>AUCTF writeup - cracker_barrel</title>
-    <link rel="stylesheet" href="/css/base.css">
-<link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="/css/blog.css"/>
+    <link rel="stylesheet" href="/css/prism-theme.css">
   </head>
   <body>
     <main>
@@ -21,16 +23,23 @@
     </div>
     <div class="flex-shrink order-last">
       <div class="grid grid-cols-2 my-auto">
-        <a href="https://github.com/Boot-Error" target="_blank"><img class="h-5 w-5 mx-2 my-1" src="/img/github.svg"/></a>
-        <a href="https://twitter.com/b00terr" target="_blank"><img class="h-5 w-5 mx-2 my-1" src="/img/twitter.svg"/></a>
-      </div>
+  
+  <a href="https://twitter.com/b00terr" target="_blank">
+    <img class="h-5 w-5 mx-2 my-1" src="/img/twitter.svg" alt="vighnesh's twitter profile"/>
+  </a>
+  
+  <a href="https://github.com/Boot-Error" target="_blank">
+    <img class="h-5 w-5 mx-2 my-1" src="/img/github.svg" alt="vighnesh's github profile"/>
+  </a>
+  
+</div>
     </div>
   </div>
 </nav>
       <div class="container max-w-screen-md mx-auto lg:mt-20">
         <article>
           <header class="px-5 pt-7 pb-3 lg:mt-20">
-            <h1 class="text-5xl py-3">AUCTF writeup - cracker_barrel</h1>
+            <h1 class="text-5xl py-3 leading-snug">AUCTF writeup - cracker_barrel</h1>
             <div class="flex display-y pt-3 display-grey-500">
               <time datetime="Mon Apr 06 2020 00:00:00 GMT+0000 (Coordinated Universal Time)" class="text-base text-primary font-bold">
                 6th Apr, 2020
@@ -65,7 +74,7 @@
           <p class="markdown">In <a href="https://ctf.auburn.edu/" class="markdown">AUCTF 2020</a> under <code>rev</code> section, the challenge <a href="https://github.com/auehc/AUCTF-2020/blob/master/Reversing/Cracker%20Barrel/prompt.md" class="markdown">cracker barrel</a> had a binary given running on remote.</p>
 <p class="markdown">Let's rev it up.</p>
 <h3 id="recon" class="markdown">recon <a class="header-anchor markdown" href="#recon">↩</a></h3>
-<pre><code class="language-radare2">o cracker_barrel
+<pre><code>o cracker_barrel
 aaa
 i
 </code></pre>
@@ -112,7 +121,7 @@ subsys   linux
 va       true
 </code></pre>
 <p class="markdown">It's ELF64, I can run it locally too. Let's look into the functions.</p>
-<pre><code class="language-radare2">aflm
+<pre><code>aflm
 </code></pre>
 <pre><code>entry0:
     reloc.__libc_start_main
@@ -165,7 +174,7 @@ sym.print_flag:
     sym.imp.__stack_chk_fail
 </code></pre>
 <p class="markdown">so we have <code>check</code> function called by <code>main</code> and inside it there are 3 functions <code>check_1</code>, <code>check_2</code> and <code>check_3</code></p>
-<pre><code class="language-radare2">s main
+<pre><code>s main
 pdg
 </code></pre>
 <pre><code>bool main(undefined8 argc, char **argv)
@@ -188,7 +197,7 @@ pdg
 </code></pre>
 <p class="markdown">Decompiling <code>main</code> using <a href="https://github.com/radareorg/r2ghidra-dec" class="markdown">r2ghidra-dec</a>!</p>
 <p class="markdown">So, <code>check</code> returns a boolean and if it's true we will get the flag.</p>
-<pre><code class="language-radare2">s sym.check
+<pre><code>s sym.check
 pdg
 </code></pre>
 <pre><code>undefined8 sym.check(void)
@@ -234,7 +243,7 @@ code_r0x00001450:
 </code></pre>
 <p class="markdown">There you have, your cascading <code>if</code> statements. Seems we need to dig deeper.</p>
 <h3 id="solving-check_1" class="markdown">solving <code>check_1</code> <a class="header-anchor markdown" href="#solving-check_1">↩</a></h3>
-<pre><code class="language-radare2">s sym.check_1
+<pre><code>s sym.check_1
 pdg
 </code></pre>
 <pre><code>undefined8 sym.check_1(char *arg1)
@@ -263,7 +272,7 @@ pdg
 it checks compares input with <code>startrek</code>. Hence, first input is either <code>starwars</code> or <code>startrek</code>.</p>
 <p class="markdown">Moving to <code>check_2</code></p>
 <h3 id="solving-check_2" class="markdown">solving <code>check_2</code> <a class="header-anchor markdown" href="#solving-check_2">↩</a></h3>
-<pre><code class="language-radare2">s sym.check_2
+<pre><code>s sym.check_2
 pdg
 </code></pre>
 <pre><code>bool sym.check_2(char *arg1)
@@ -291,7 +300,7 @@ And the while loop is doing exactly that, reversing the string and comparing it 
 <p class="markdown">Hence, our second input should be <code>secret message this is</code>.</p>
 <p class="markdown">Moving on to <code>check_3</code></p>
 <h3 id="solving-check_3" class="markdown">solving <code>check_3</code> <a class="header-anchor markdown" href="#solving-check_3">↩</a></h3>
-<pre><code class="language-radare2">s sym.check_3
+<pre><code>s sym.check_3
 pdg
 </code></pre>
 <pre><code>bool sym.check_3(char *arg1)
@@ -361,5 +370,9 @@ pdg
   </div>
 </footer>
 
+    <script>
+  if ("serviceWorker" in navigator)
+    navigator.serviceWorker.register("/service-worker.js");
+</script> 
   </body>
 </html>

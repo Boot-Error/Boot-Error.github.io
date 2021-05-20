@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <title>AUCTF writeup - plain_jane</title>
-    <link rel="stylesheet" href="/css/base.css">
-<link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="/css/blog.css"/>
+    <link rel="stylesheet" href="/css/prism-theme.css">
   </head>
   <body>
     <main>
@@ -21,16 +23,23 @@
     </div>
     <div class="flex-shrink order-last">
       <div class="grid grid-cols-2 my-auto">
-        <a href="https://github.com/Boot-Error" target="_blank"><img class="h-5 w-5 mx-2 my-1" src="/img/github.svg"/></a>
-        <a href="https://twitter.com/b00terr" target="_blank"><img class="h-5 w-5 mx-2 my-1" src="/img/twitter.svg"/></a>
-      </div>
+  
+  <a href="https://twitter.com/b00terr" target="_blank">
+    <img class="h-5 w-5 mx-2 my-1" src="/img/twitter.svg" alt="vighnesh's twitter profile"/>
+  </a>
+  
+  <a href="https://github.com/Boot-Error" target="_blank">
+    <img class="h-5 w-5 mx-2 my-1" src="/img/github.svg" alt="vighnesh's github profile"/>
+  </a>
+  
+</div>
     </div>
   </div>
 </nav>
       <div class="container max-w-screen-md mx-auto lg:mt-20">
         <article>
           <header class="px-5 pt-7 pb-3 lg:mt-20">
-            <h1 class="text-5xl py-3">AUCTF writeup - plain_jane</h1>
+            <h1 class="text-5xl py-3 leading-snug">AUCTF writeup - plain_jane</h1>
             <div class="flex display-y pt-3 display-grey-500">
               <time datetime="Mon Apr 06 2020 00:00:00 GMT+0000 (Coordinated Universal Time)" class="text-base text-primary font-bold">
                 6th Apr, 2020
@@ -66,11 +75,10 @@
 <p class="markdown">Here's what I did.</p>
 <p class="markdown">First, compile it to binary using <code>gcc</code></p>
 <h3 id="compile" class="markdown">Compile <a class="header-anchor markdown" href="#compile">↩</a></h3>
-<pre><code class="language-sh">gcc -o plain_jane plain_jane.s
-</code></pre>
+<pre class="language-shell"><code class="language-shell">gcc -o plain_jane plain_jane.s</code></pre>
 <p class="markdown">Then open the binary in radare.</p>
 <h3 id="recon" class="markdown">Recon <a class="header-anchor markdown" href="#recon">↩</a></h3>
-<pre><code class="language-radare2">o plain_jane
+<pre><code>o plain_jane
 aaa
 i
 </code></pre>
@@ -116,7 +124,7 @@ stripped false
 subsys   linux
 va       true
 </code></pre>
-<pre><code class="language-radare2">aflm
+<pre><code>aflm
 </code></pre>
 <pre><code>entry0:
     reloc.__libc_start_main
@@ -135,7 +143,7 @@ main:
     sym.func_3
 </code></pre>
 <p class="markdown">So we have <code>main</code> calling 3 functions <code>func_1</code>, <code>func_2</code> and <code>func_3</code></p>
-<pre><code class="language-radare2">s main
+<pre><code>s main
 pdf
 </code></pre>
 <pre><code>┌ 59: int main (int argc, char **argv, char **envp);
@@ -166,7 +174,7 @@ pdf
 <p class="markdown">Now since we need to know what the program returns, find the location where the final output of the program is stored. The final computation is returned by the <code>func_3</code> fn call, where the output is pushed to stack at <code>rbp-0xc</code>.</p>
 <p class="markdown">Running the program in debugger and setting a breakpoint at <code>0x0000114a</code> should give us the output we have been looking for.</p>
 <h3 id="debug-to-get-the-flag" class="markdown">Debug to get the flag <a class="header-anchor markdown" href="#debug-to-get-the-flag">↩</a></h3>
-<pre><code class="language-radare2">ood
+<pre><code>ood
 s main
 pdf
 </code></pre>
@@ -195,10 +203,10 @@ pdf
 │           0x55c1cd642152      c9             leave
 └           0x55c1cd642153      c3             ret
 </code></pre>
-<pre><code class="language-radare2">dcu 0x55c1cd64214a
+<pre><code>dcu 0x55c1cd64214a
 </code></pre>
 <p class="markdown">At this state, the value returned from <code>func_3</code> is stored in <code>eax</code> register. Let's inspect the registers.</p>
-<pre><code class="language-radare2">dr
+<pre><code>dr
 </code></pre>
 <pre><code>rax = 0x00006fcf
 rbx = 0x55c1cd642250
@@ -221,7 +229,7 @@ rflags = 0x00000246
 orax = 0xffffffffffffffff
 </code></pre>
 <p class="markdown">In <code>x86_64</code>, the <code>rax</code> register's lower half i.e the 32bits from LSB is the value stored in <code>eax</code>. On converting <code>0x6fcf</code> into a decimal, we should get the flag.</p>
-<pre><code class="language-radare2">? 0x6fcf
+<pre><code>? 0x6fcf
 </code></pre>
 <pre><code>int32   28623
 uint32  28623
@@ -251,5 +259,9 @@ trits   0t1110021010
   </div>
 </footer>
 
+    <script>
+  if ("serviceWorker" in navigator)
+    navigator.serviceWorker.register("/service-worker.js");
+</script> 
   </body>
 </html>
