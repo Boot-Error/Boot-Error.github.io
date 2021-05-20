@@ -1,0 +1,120 @@
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <title>WFH Hack with Attiny85</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="/css/blog.css"/>
+    <link rel="stylesheet" href="/css/prism-theme.css">
+  </head>
+  <body>
+    <main>
+      <nav class="container max-w-screen-md mx-auto mt-7 px-5">
+  <div class="flex flex-row">
+    <div class="flex-grow order-1">
+      <a href="/" class="text-lg lg:text-lg font-bold hover:underline text-secondary">
+        Vighnesh's Musings
+      </a>
+    </div>
+    <div class="flex-shrink order-last">
+      <div class="grid grid-cols-2 my-auto">
+  
+  <a href="https://twitter.com/b00terr" target="_blank">
+    <img class="h-5 w-5 mx-2 my-1" src="/img/twitter.svg" alt="vighnesh's twitter profile"/>
+  </a>
+  
+  <a href="https://github.com/Boot-Error" target="_blank">
+    <img class="h-5 w-5 mx-2 my-1" src="/img/github.svg" alt="vighnesh's github profile"/>
+  </a>
+  
+</div>
+    </div>
+  </div>
+</nav>
+      <div class="container max-w-screen-md mx-auto lg:mt-20">
+        <article>
+          <header class="px-5 pt-7 pb-3 lg:mt-20">
+            <h1 class="text-5xl py-3 leading-snug">WFH Hack with Attiny85</h1>
+            <div class="flex display-y pt-3 display-grey-500">
+              <time datetime="Thu Mar 25 2021 00:00:00 GMT+0000 (Coordinated Universal Time)" class="text-base text-primary font-bold">
+                25th Mar, 2021
+              </time>
+              <div class="text-base pl-5">
+<section>
+  <ul class="flex flex-wrap">
+    
+    <li>
+      <a class="font-medium hover:underline px-1" href="/tag/arduino"
+        >#arduino</a
+      >
+    </li>
+    
+    <li>
+      <a class="font-medium hover:underline px-1" href="/tag/usb"
+        >#usb</a
+      >
+    </li>
+    
+    <li>
+      <a class="font-medium hover:underline px-1" href="/tag/automation"
+        >#automation</a
+      >
+    </li>
+    
+  </ul>
+</section>
+</div>
+            </div>
+          </header>
+          <p class="markdown">I'm restricted to using my Work Laptop for everything related to work and it's all great and usual, but with a minor inconvenience.
+The laptop hibernates after couple of minutes of inactivity, and If walk away for a coffee, I'll miss on important notification, delaying my response.</p>
+<p class="markdown">And I can't change the screensaver settings, which is acceptable. Hence, I came up with this hack.</p>
+<!-- more -->
+<h3 id="my-smart-friend's-hack" class="markdown">My Smart friend's hack <a class="header-anchor markdown" href="#my-smart-friend's-hack">↩</a></h3>
+<p class="markdown">A friend of mine came up with a simple hack, where he would place his Analog Watch underneath the mouse's optical sensor. The movement of the second hand would constantly trigger some mouse activity which stops his laptop from hibernating.</p>
+<p class="markdown">This is great, but I felt it too tedious and I didn't have a watch (duh I got my smartphone to check time). I need a better solution.</p>
+<h2 id="meet-attiny85" class="markdown">Meet Attiny85 <a class="header-anchor markdown" href="#meet-attiny85">↩</a></h2>
+<p class="markdown">Attiny85 is an Atmega Series microcontroller and the package above is size of a thumb with a PCB craved out like a USB port. I can write Arduino code which can run on this tiny microcontroller. This includes writing a programmable USB HID 😈</p>
+<div class="image-container"><img src="/img/digispark_attiny85.jpg" alt="Attiny 85" class="markdown"></div>
+<p class="markdown">I had one lying around, time to build one.</p>
+<h2 id="the-mouse-jiggler" class="markdown">The Mouse Jiggler <a class="header-anchor markdown" href="#the-mouse-jiggler">↩</a></h2>
+<p class="markdown">To trick my laptop into thinking I'm using it, the Attiny 85 program does the following in bare minimum</p>
+<ul class="markdown">
+<li class="markdown">For Every 2 minutes,
+<ul class="markdown">
+<li class="markdown">move the mouse pointer to any direction</li>
+<li class="markdown">move the mouse pointer back to where it was</li>
+</ul>
+</li>
+</ul>
+<p class="markdown">For the computer, this is a mouse activity meaning the user is active. The computer would reset its screen saver timeout.</p>
+<p class="markdown">Follow instructions <a href="https://www.instructables.com/Digispark-Attiny-85-With-Arduino-IDE/" class="markdown">here</a> to setup Arduino IDE for programming this board</p>
+<p class="markdown">Here is the code, the phantom user to my computer!</p>
+<pre class="language-cpp"><code class="language-cpp"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;DigiMouse.h></span></span><br><br><span class="token comment">// wait for DELAY_MINUTES, this is less than your</span><br><span class="token comment">// screen saver's timeout</span><br><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">DELAY_MINUTES</span> <span class="token expression"><span class="token number">2</span></span></span><br><br><span class="token keyword">void</span> <span class="token function">setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span><br>  DigiMouse<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>  <span class="token function">pinMode</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> OUTPUT<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><br> <br><span class="token keyword">void</span> <span class="token function">loop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>  <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token comment">// blinks the on-board LED to indicate mouse movement</span><br>    <span class="token function">digitalWrite</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> HIGH<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token comment">// moves the cursor right 30px</span><br>    DigiMouse<span class="token punctuation">.</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token number">30</span> <span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    DigiMouse<span class="token punctuation">.</span><span class="token function">delay</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token comment">// move the cursor left 30px</span><br>    DigiMouse<span class="token punctuation">.</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">30</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token function">digitalWrite</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> LOW<span class="token punctuation">)</span><br>    DigiMouse<span class="token punctuation">.</span><span class="token function">delay</span><span class="token punctuation">(</span>DELAY_MINUTES <span class="token operator">*</span> <span class="token number">60000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p class="markdown">Compile and upload the sketch and watch your computer tricked into thinking you are always working!</p>
+<p class="markdown">This Mouse Jiggler won't even interrupt while you are working since it's actions are so swift, unless you do a lot of art using mouse then prepare for some erroneous lines in your drawings.</p>
+
+        </article>
+      </div>
+    </main>
+    <footer class="bottom-0">
+  <div class="my-5">
+    <div class="flex flex-row">
+      <div class="flex-grow text-center gaps-4">
+        <a class="font-bold text-secondary" href="/">home</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+    <script>
+  if ("serviceWorker" in navigator)
+    navigator.serviceWorker.register("/service-worker.js");
+</script> 
+  </body>
+</html>

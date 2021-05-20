@@ -1,0 +1,378 @@
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <title>AUCTF writeup - cracker_barrel</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="/css/blog.css"/>
+    <link rel="stylesheet" href="/css/prism-theme.css">
+  </head>
+  <body>
+    <main>
+      <nav class="container max-w-screen-md mx-auto mt-7 px-5">
+  <div class="flex flex-row">
+    <div class="flex-grow order-1">
+      <a href="/" class="text-lg lg:text-lg font-bold hover:underline text-secondary">
+        Vighnesh's Musings
+      </a>
+    </div>
+    <div class="flex-shrink order-last">
+      <div class="grid grid-cols-2 my-auto">
+  
+  <a href="https://twitter.com/b00terr" target="_blank">
+    <img class="h-5 w-5 mx-2 my-1" src="/img/twitter.svg" alt="vighnesh's twitter profile"/>
+  </a>
+  
+  <a href="https://github.com/Boot-Error" target="_blank">
+    <img class="h-5 w-5 mx-2 my-1" src="/img/github.svg" alt="vighnesh's github profile"/>
+  </a>
+  
+</div>
+    </div>
+  </div>
+</nav>
+      <div class="container max-w-screen-md mx-auto lg:mt-20">
+        <article>
+          <header class="px-5 pt-7 pb-3 lg:mt-20">
+            <h1 class="text-5xl py-3 leading-snug">AUCTF writeup - cracker_barrel</h1>
+            <div class="flex display-y pt-3 display-grey-500">
+              <time datetime="Mon Apr 06 2020 00:00:00 GMT+0000 (Coordinated Universal Time)" class="text-base text-primary font-bold">
+                6th Apr, 2020
+              </time>
+              <div class="text-base pl-5">
+<section>
+  <ul class="flex flex-wrap">
+    
+    <li>
+      <a class="font-medium hover:underline px-1" href="/tag/ctf-writeup"
+        >#ctf-writeup</a
+      >
+    </li>
+    
+    <li>
+      <a class="font-medium hover:underline px-1" href="/tag/reversing"
+        >#reversing</a
+      >
+    </li>
+    
+    <li>
+      <a class="font-medium hover:underline px-1" href="/tag/radare"
+        >#radare</a
+      >
+    </li>
+    
+  </ul>
+</section>
+</div>
+            </div>
+          </header>
+          <p class="markdown">In <a href="https://ctf.auburn.edu/" class="markdown">AUCTF 2020</a> under <code>rev</code> section, the challenge <a href="https://github.com/auehc/AUCTF-2020/blob/master/Reversing/Cracker%20Barrel/prompt.md" class="markdown">cracker barrel</a> had a binary given running on remote.</p>
+<p class="markdown">Let's rev it up.</p>
+<h3 id="recon" class="markdown">recon <a class="header-anchor markdown" href="#recon">↩</a></h3>
+<pre><code>o cracker_barrel
+aaa
+i
+</code></pre>
+<pre><code>fd       6
+file     cracker_barrel
+size     0x43e8
+humansz  17.0K
+mode     r-x
+format   elf64
+iorw     false
+blksz    0x0
+block    0x100
+type     DYN (Shared object file)
+arch     x86
+baddr    0x0
+binsz    15399
+bintype  elf
+bits     64
+canary   true
+class    ELF64
+compiler GCC: (Ubuntu 9.2.1-9ubuntu2) 9.2.1 20191008
+crypto   false
+endian   little
+havecode true
+intrp    /lib64/ld-linux-x86-64.so.2
+laddr    0x0
+lang     c
+linenum  true
+lsyms    true
+machine  AMD x86-64 architecture
+maxopsz  16
+minopsz  1
+nx       true
+os       linux
+pcalign  0
+pic      true
+relocs   true
+relro    full
+rpath    NONE
+sanitiz  false
+static   false
+stripped false
+subsys   linux
+va       true
+</code></pre>
+<p class="markdown">It's ELF64, I can run it locally too. Let's look into the functions.</p>
+<pre><code>aflm
+</code></pre>
+<pre><code>entry0:
+    reloc.__libc_start_main
+
+entry.fini0:
+    sym..plt.got
+    rip
+
+sym.remove_newline:
+    sym.imp.strlen
+
+sym.check_2:
+    sym.imp.strlen
+    sym.imp.malloc
+    sym.imp.strcmp
+
+sym.__libc_csu_init:
+    sym._init
+    rax
+
+sym.check_1:
+    sym.imp.strcmp
+
+main:
+    sym.imp.setvbuf
+    sym.check
+    sym.print_flag
+    sym.imp.puts
+
+sym.check:
+    sym.imp.puts
+    sym.imp.fgets
+    sym.remove_newline
+    sym.check_1
+    sym.check_2
+    sym.check_3
+    sym.imp.__stack_chk_fail
+
+sym.check_3:
+    sym.imp.strlen
+    sym.imp.malloc
+    sym.imp.__stack_chk_fail
+
+sym.print_flag:
+    sym.imp.fopen
+    sym.imp.puts
+    sym.imp.exit
+    sym.imp.fgets
+    sym.imp.printf
+    sym.imp.__stack_chk_fail
+</code></pre>
+<p class="markdown">so we have <code>check</code> function called by <code>main</code> and inside it there are 3 functions <code>check_1</code>, <code>check_2</code> and <code>check_3</code></p>
+<pre><code>s main
+pdg
+</code></pre>
+<pre><code>bool main(undefined8 argc, char **argv)
+{
+    int32_t iVar1;
+    undefined8 in_R8;
+    undefined8 in_R9;
+    char **var_10h;
+    int64_t var_4h;
+
+    sym.imp.setvbuf(_reloc.stdout, 0, 2, 0, in_R8, in_R9, argv);
+    iVar1 = sym.check();
+    if (iVar1 == 0) {
+        sym.imp.puts(&quot;That\'s not it!&quot;);
+    } else {
+        sym.print_flag();
+    }
+    return iVar1 == 0;
+}
+</code></pre>
+<p class="markdown">Decompiling <code>main</code> using <a href="https://github.com/radareorg/r2ghidra-dec" class="markdown">r2ghidra-dec</a>!</p>
+<p class="markdown">So, <code>check</code> returns a boolean and if it's true we will get the flag.</p>
+<pre><code>s sym.check
+pdg
+</code></pre>
+<pre><code>undefined8 sym.check(void)
+{
+    int64_t iVar1;
+    int32_t iVar2;
+    undefined8 uVar3;
+    int64_t in_FS_OFFSET;
+    int64_t var_2018h;
+    int64_t var_2010h;
+    int64_t var_8h;
+
+    iVar1 = *(int64_t *)(in_FS_OFFSET + 0x28);
+    sym.imp.puts(&quot;Give me a key!&quot;);
+    sym.imp.fgets(&amp;var_2010h, 0x2000, _reloc.stdin);
+    sym.remove_newline((char *)&amp;var_2010h);
+    iVar2 = sym.check_1((char *)&amp;var_2010h);
+    if (iVar2 != 0) {
+        sym.imp.puts(&quot;You have passed the first test! Now I need another key!&quot;);
+        sym.imp.fgets(&amp;var_2010h, 0x2000, _reloc.stdin);
+        sym.remove_newline((char *)&amp;var_2010h);
+        iVar2 = sym.check_2((char *)&amp;var_2010h);
+        if (iVar2 != 0) {
+            sym.imp.puts(&quot;Nice work! You\'ve passes the second test, we aren\'t done yet!&quot;);
+            sym.imp.fgets(&amp;var_2010h, 0x2000, _reloc.stdin);
+            sym.remove_newline((char *)&amp;var_2010h);
+            iVar2 = sym.check_3((char *)&amp;var_2010h);
+            if (iVar2 != 0) {
+                sym.imp.puts(&quot;Congrats you finished! Here is your flag!&quot;);
+                uVar3 = 1;
+                goto code_r0x00001450;
+            }
+        }
+    }
+    uVar3 = 0;
+code_r0x00001450:
+    if (iVar1 != *(int64_t *)(in_FS_OFFSET + 0x28)) {
+    // WARNING: Subroutine does not return
+        sym.imp.__stack_chk_fail();
+    }
+    return uVar3;
+}
+</code></pre>
+<p class="markdown">There you have, your cascading <code>if</code> statements. Seems we need to dig deeper.</p>
+<h3 id="solving-check_1" class="markdown">solving <code>check_1</code> <a class="header-anchor markdown" href="#solving-check_1">↩</a></h3>
+<pre><code>s sym.check_1
+pdg
+</code></pre>
+<pre><code>undefined8 sym.check_1(char *arg1)
+{
+    int32_t iVar1;
+    undefined8 uVar2;
+    char *s1;
+    char *s2;
+    char *var_8h;
+
+    iVar1 = sym.imp.strcmp(arg1, &quot;starwars&quot;, &quot;starwars&quot;);
+    if (iVar1 == 0) {
+        iVar1 = sym.imp.strcmp(arg1, &quot;startrek&quot;, &quot;startrek&quot;);
+        if (iVar1 == 0) {
+            uVar2 = 0;
+        } else {
+            uVar2 = 1;
+        }
+    } else {
+        uVar2 = 0;
+    }
+    return uVar2;
+}
+</code></pre>
+<p class="markdown">Alright, <code>check_1</code> is simple, it compares input with <code>starwars</code>, if it isn't equal then
+it checks compares input with <code>startrek</code>. Hence, first input is either <code>starwars</code> or <code>startrek</code>.</p>
+<p class="markdown">Moving to <code>check_2</code></p>
+<h3 id="solving-check_2" class="markdown">solving <code>check_2</code> <a class="header-anchor markdown" href="#solving-check_2">↩</a></h3>
+<pre><code>s sym.check_2
+pdg
+</code></pre>
+<pre><code>bool sym.check_2(char *arg1)
+{
+    int32_t iVar1;
+    int64_t iVar2;
+    char *s2;
+    int32_t var_18h;
+    char *var_10h;
+    char *s1;
+
+    iVar1 = sym.imp.strlen(arg1);
+    iVar2 = sym.imp.malloc((int64_t)(iVar1 + 1) &lt;&lt; 3);
+    var_18h = 0;
+    while (var_18h &lt; iVar1) {
+        *(char *)(iVar2 + var_18h) = &quot;si siht egassem terces&quot;[(iVar1 + -1) - var_18h];
+        var_18h = var_18h + 1;
+    }
+    iVar1 = sym.imp.strcmp(iVar2, arg1, arg1);
+    return iVar1 == 0;
+}
+</code></pre>
+<p class="markdown">Okay, <code>check_2</code> has a string <code>si siht egassem terces</code> which when read in reverse is <code>secret message this is</code>.
+And the while loop is doing exactly that, reversing the string and comparing it with the second input.</p>
+<p class="markdown">Hence, our second input should be <code>secret message this is</code>.</p>
+<p class="markdown">Moving on to <code>check_3</code></p>
+<h3 id="solving-check_3" class="markdown">solving <code>check_3</code> <a class="header-anchor markdown" href="#solving-check_3">↩</a></h3>
+<pre><code>s sym.check_3
+pdg
+</code></pre>
+<pre><code>bool sym.check_3(char *arg1)
+{
+    int64_t iVar1;
+    bool bVar2;
+    int64_t iVar3;
+    uint64_t uVar4;
+    int64_t in_FS_OFFSET;
+    int64_t var_68h;
+    int64_t var_54h;
+    int32_t var_4ch;
+    int64_t var_48h;
+    int64_t var_40h;
+    int64_t var_18h;
+
+    iVar1 = *(int64_t *)(in_FS_OFFSET + 0x28);
+    var_40h._0_4_ = 0x7a;
+    var_40h._4_4_ = 0x21;
+    iVar3 = sym.imp.strlen(arg1);
+    iVar3 = sym.imp.malloc(iVar3 &lt;&lt; 2);
+    var_54h._0_4_ = 0;
+    while (uVar4 = sym.imp.strlen(arg1), (uint64_t)(int64_t)(int32_t)var_54h &lt; uVar4) {
+        *(uint32_t *)(iVar3 + (int64_t)(int32_t)var_54h * 4) = (int32_t)arg1[(int32_t)var_54h] + 2U ^ 0x14;
+        var_54h._0_4_ = (int32_t)var_54h + 1;
+    }
+    bVar2 = false;
+    var_4ch = 0;
+    while (uVar4 = sym.imp.strlen(arg1), (uint64_t)(int64_t)var_4ch &lt; uVar4) {
+        if (*(int32_t *)(iVar3 + (int64_t)var_4ch * 4) != *(int32_t *)((int64_t)&amp;var_40h + (int64_t)var_4ch * 4)) {
+            bVar2 = true;
+        }
+        var_4ch = var_4ch + 1;
+    }
+    if (iVar1 != *(int64_t *)(in_FS_OFFSET + 0x28)) {
+    // WARNING: Subroutine does not return
+        sym.imp.__stack_chk_fail();
+    }
+    return !bVar2;
+}
+</code></pre>
+<p class="markdown">This was rather interesting, I took me a while to understand while to understand what's going on in here. There is a bitwise XOR operation to a string 4 times the given input length (the malloc has the length of string left shift by 2).</p>
+<p class="markdown">This was until I found another solution, this was unintentional I suppose, judging by path we followed on reversing other 2 functions. The creator wants us to reverse this. But let's stick to the unintented solution.</p>
+<p class="markdown">Note the variable <code>bVar2</code>, initially it's set to <code>false</code>. And at the return of the function, it is <code>!bVar2</code> which means in order for the function return <code>true</code>, <code>bVar2</code> should be <code>false</code> which it is initially. The intention of the second <code>while</code> is to compared the input with the crated string and it turns <code>bVar2</code> to true whenever the comparison is <code>false</code>. This is a trivial technique, find if 2 strings are equal? Match it character by character and declare it equal only if you didn't find any mismatch till the end.</p>
+<p class="markdown">This is where I guess out unintended solution summons. The <code>while</code> loop runs as long as <code>var_4ch &lt; strlen(arg1)</code> where <code>arg1</code> is the input. If the loop never ran we wouldn't change out <code>bVar2</code>.</p>
+<p class="markdown">How to do that? <em>Supply an empty string</em> :sunglasses:</p>
+<p class="markdown">The condition turns <code>false</code> in the first iteration itself and the <code>while</code> loop is never executed.</p>
+<h3 id="the-result" class="markdown">The result <a class="header-anchor markdown" href="#the-result">↩</a></h3>
+<p class="markdown">So here is the solution, <code>nc</code> the challenge, then supply these inputs in order.</p>
+<ol class="markdown">
+<li class="markdown"><code>starwars</code></li>
+<li class="markdown"><code>secret message this is</code></li>
+<li class="markdown">`` (just hit enter)</li>
+</ol>
+<p class="markdown">You will get the flag.</p>
+
+        </article>
+      </div>
+    </main>
+    <footer class="bottom-0">
+  <div class="my-5">
+    <div class="flex flex-row">
+      <div class="flex-grow text-center gaps-4">
+        <a class="font-bold text-secondary" href="/">home</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+    <script>
+  if ("serviceWorker" in navigator)
+    navigator.serviceWorker.register("/service-worker.js");
+</script> 
+  </body>
+</html>
