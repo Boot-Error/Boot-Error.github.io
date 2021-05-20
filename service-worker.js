@@ -84,7 +84,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.html",
-    "revision": "7a13d18ec2eead1068e7d57f35a7bdd6"
+    "revision": "ac408c5b69e2b0b7b8227676b01c6594"
   },
   {
     "url": "manifest.json",
@@ -92,71 +92,71 @@ self.__precacheManifest = [
   },
   {
     "url": "post/cracker_barrel_writeup/index.html",
-    "revision": "4a5b1a800686f6412110b5d4e5560e42"
+    "revision": "013948a5ac44958ae684a8cd02c64856"
   },
   {
     "url": "post/lvm/index.html",
-    "revision": "c72055942dbca0c339d3605adf9d0329"
+    "revision": "613578c319b472da32f302f5f088f408"
   },
   {
     "url": "post/plain_jane_writeup/index.html",
-    "revision": "11e73217cdb9983d360e0185ab9d1124"
+    "revision": "8816ee02f8722a2795bd38a48f4d3050"
   },
   {
     "url": "post/vault-writeup/index.html",
-    "revision": "2255f507cee55f03e32dcb2aacbdb5a6"
+    "revision": "685874fa9cffc5c1d11f83f85ffd7ff3"
   },
   {
     "url": "post/wfh_hack_using_attiny85/index.html",
-    "revision": "a93ed4e29873e3c7698ebc81b771b71d"
+    "revision": "b1155d9316650b0c233c3becf83ef543"
   },
   {
     "url": "tag/all/index.html",
-    "revision": "2307c24cf3bd2b400b350f2aa7b71f20"
+    "revision": "31b6930bbe0a42092bad75cc2b829477"
   },
   {
     "url": "tag/allTags/index.html",
-    "revision": "0c80342c3cebcdda63d1f9e7ee13866f"
+    "revision": "6c398e9afd8a7446d0d1b2ff5b4e885c"
   },
   {
     "url": "tag/archlinux/index.html",
-    "revision": "7225bd54685aa34252bbb89b838fb053"
+    "revision": "405185dafe42224b3aa65db2b0f9c09e"
   },
   {
     "url": "tag/arduino/index.html",
-    "revision": "78ad5e2ef7985b2bf1b9c5f4ed83d8a9"
+    "revision": "c2979b2695729867d7bf7320df827f66"
   },
   {
     "url": "tag/automation/index.html",
-    "revision": "53653d1aa742a15beaca3f36719952d6"
+    "revision": "04b07440e933c54952387aad019b5a2e"
   },
   {
     "url": "tag/ctf-writeup/index.html",
-    "revision": "8c0743b9c53e6c2e90d7cfebd9039525"
+    "revision": "ba287f927d6fed160d99640aacc75140"
   },
   {
     "url": "tag/lvm/index.html",
-    "revision": "40db1a700af8c2919887698854ca925e"
+    "revision": "533c7e74afade5473166f9f2a2db8514"
   },
   {
     "url": "tag/posts/index.html",
-    "revision": "784d507b354ab3e0a0636d5d872d307a"
+    "revision": "30d1c88d157236bcb00488ff0c8a8748"
   },
   {
     "url": "tag/postsByYear/index.html",
-    "revision": "12d431e06e9ece3bc1ddbf6192ca4481"
+    "revision": "bf69d2f383f6ee5cf26711353e10e5dc"
   },
   {
     "url": "tag/radare/index.html",
-    "revision": "de441f42de0b5827eb1d40bad06abd72"
+    "revision": "7e60432052759ada0ad7e67e44668d14"
   },
   {
     "url": "tag/reversing/index.html",
-    "revision": "a224ceed4fd8802172d5e18a01146e5a"
+    "revision": "0f66a8ffbe957457954986d0740d1270"
   },
   {
     "url": "tag/usb/index.html",
-    "revision": "5f29c44a86ed4f8c966b3a19425a1ff1"
+    "revision": "ef99ebaa105a55a9c26bf1e79f6fd1db"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
