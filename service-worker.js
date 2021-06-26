@@ -112,11 +112,11 @@ self.__precacheManifest = [
   },
   {
     "url": "tag/all/index.html",
-    "revision": "31b6930bbe0a42092bad75cc2b829477"
+    "revision": "47106fd4ebb9fa3f709efa8c11773621"
   },
   {
     "url": "tag/allTags/index.html",
-    "revision": "6c398e9afd8a7446d0d1b2ff5b4e885c"
+    "revision": "b13cf5cf6c50782f93a53fbcb236bdf1"
   },
   {
     "url": "tag/archlinux/index.html",
@@ -144,7 +144,7 @@ self.__precacheManifest = [
   },
   {
     "url": "tag/postsByYear/index.html",
-    "revision": "bf69d2f383f6ee5cf26711353e10e5dc"
+    "revision": "ff7bbdfee3f597fe7ec54f978f538da3"
   },
   {
     "url": "tag/radare/index.html",
