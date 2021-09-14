@@ -84,7 +84,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.html",
-    "revision": "ac408c5b69e2b0b7b8227676b01c6594"
+    "revision": "838dd683a1004db0e710d94e82acf6aa"
   },
   {
     "url": "manifest.json",
@@ -92,31 +92,31 @@ self.__precacheManifest = [
   },
   {
     "url": "post/cracker_barrel_writeup/index.html",
-    "revision": "013948a5ac44958ae684a8cd02c64856"
+    "revision": "13f87ddf66525b4775fbe7a3f4944d7f"
   },
   {
     "url": "post/lvm/index.html",
-    "revision": "613578c319b472da32f302f5f088f408"
+    "revision": "bac3dcc82ebeae9bc106197563f2e222"
   },
   {
     "url": "post/plain_jane_writeup/index.html",
-    "revision": "8816ee02f8722a2795bd38a48f4d3050"
+    "revision": "d1cb6221197e2349994180b7834ea14c"
   },
   {
     "url": "post/vault-writeup/index.html",
-    "revision": "685874fa9cffc5c1d11f83f85ffd7ff3"
+    "revision": "262be8b0ab26a0bd689a882b75445182"
   },
   {
     "url": "post/wfh_hack_using_attiny85/index.html",
-    "revision": "b1155d9316650b0c233c3becf83ef543"
+    "revision": "67240433ff4e8bb051afa76dc8ff23ed"
   },
   {
     "url": "tag/all/index.html",
-    "revision": "47106fd4ebb9fa3f709efa8c11773621"
+    "revision": "c5bd13e117684e523db03e6dd655e8f6"
   },
   {
     "url": "tag/allTags/index.html",
-    "revision": "b13cf5cf6c50782f93a53fbcb236bdf1"
+    "revision": "8d9aee0fb7229ad691bd26f20fa614ad"
   },
   {
     "url": "tag/archlinux/index.html",
@@ -144,7 +144,7 @@ self.__precacheManifest = [
   },
   {
     "url": "tag/postsByYear/index.html",
-    "revision": "ff7bbdfee3f597fe7ec54f978f538da3"
+    "revision": "550461a1523e8fff7a77ac30635be5a8"
   },
   {
     "url": "tag/radare/index.html",
